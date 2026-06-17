@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>SkillUp — Learn AI for your profession</title>
+<meta name="description" content="Learn AI skills built for your profession. Legal, Finance, Healthcare, Real Estate, Care and Property Management tracks with real lessons and completion certificates.">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#0a1512;--bg2:#0f1e1a;--bg3:#162820;--bg4:#1c3028;--accent:#2dd4a0;--text:#e8f5f0;--text2:#7ab5a0;--border:rgba(45,212,160,0.15);--font:'Inter',-apple-system,sans-serif;--radius:16px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;-webkit-font-smoothing:antialiased;}
+.hidden{display:none!important;}
+a{text-decoration:none;color:inherit;}
+nav{position:sticky;top:0;z-index:100;background:rgba(10,21,18,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.nav-icon{width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.nav-name{font-size:18px;font-weight:800;letter-spacing:-0.02em;}
+.nav-right{display:flex;gap:10px;align-items:center;}
+.nav-btn{padding:8px 16px;border-radius:8px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--font);border:none;transition:all 0.15s;}
+.nav-btn.ghost{background:transparent;color:var(--text2);border:1px solid var(--border);}
+.nav-btn.ghost:hover{border-color:var(--accent);color:var(--accent);}
+.nav-btn.solid{background:var(--accent);color:#0a1512;}
+.hero{padding:64px 20px 56px;text-align:center;background:radial-gradient(ellipse at 50% 0%,rgba(45,212,160,0.1) 0%,transparent 65%);}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);background:rgba(45,212,160,0.1);border:1px solid var(--border);padding:5px 14px;border-radius:99px;margin-bottom:28px;}
+.hero-title{font-size:clamp(2.2rem,8vw,3.8rem);font-weight:800;line-height:1.08;letter-spacing:-0.03em;margin-bottom:20px;}
+.hero-title span{color:var(--accent);}
+.hero-sub{font-size:clamp(1rem,2.5vw,1.15rem);color:var(--text2);max-width:480px;margin:0 auto 36px;line-height:1.7;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:48px;}
+.hero-btn{padding:14px 28px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font);border:none;transition:all 0.15s;}
+.hero-btn.primary{background:var(--accent);color:#0a1512;}
+.hero-btn.secondary{background:transparent;color:var(--text2);border:1px solid var(--border);}
+.hero-stats{display:flex;gap:40px;justify-content:center;flex-wrap:wrap;}
+.hero-stat-num{font-size:24px;font-weight:800;color:var(--accent);}
+.hero-stat-label{font-size:12px;color:var(--text2);margin-top:2px;}
+.section{padding:48px 20px;max-width:640px;margin:0 auto;}
+.section-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.section-title{font-size:clamp(1.6rem,5vw,2.2rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:12px;}
+.section-sub{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:32px;}
+.found-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:32px;position:relative;overflow:hidden;}
+.found-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);}
+.found-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--accent);border:1px solid var(--border);padding:4px 12px;border-radius:99px;margin-bottom:16px;}
+.found-title{font-size:22px;font-weight:800;letter-spacing:-0.02em;margin-bottom:12px;}
+.found-desc{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:20px;}
+.found-btn{display:inline-block;padding:12px 24px;background:var(--accent);color:#0a1512;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:var(--font);}
+.tracks-grid{display:flex;flex-direction:column;gap:12px;}
+.track-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:18px;display:flex;align-items:flex-start;gap:14px;cursor:pointer;transition:all 0.15s;}
+.track-card:hover{border-color:var(--accent);background:var(--bg4);}
+.track-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.track-name{font-size:15px;font-weight:700;margin-bottom:3px;}
+.track-desc{font-size:13px;color:var(--text2);margin-bottom:6px;line-height:1.5;}
+.track-meta{font-size:12px;color:var(--text2);opacity:0.7;}
+.track-arrow{color:var(--text2);font-size:18px;align-self:center;margin-left:auto;}
+.pricing-grid{display:flex;flex-direction:column;gap:14px;}
+.price-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:22px;}
+.price-card.featured{border-color:var(--accent);position:relative;}
+.price-card.featured::before{content:'MOST POPULAR';position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--accent);color:#0a1512;font-size:10px;font-weight:800;letter-spacing:0.1em;padding:3px 12px;border-radius:0 0 8px 8px;}
+.price-name{font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text2);margin-bottom:8px;}
+.price-amount{font-size:32px;font-weight:800;margin-bottom:4px;}
+.price-amount span{font-size:15px;color:var(--text2);font-weight:400;}
+.price-desc{font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.5;}
+.price-feats{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;}
+.price-feat{font-size:13.5px;color:var(--text2);display:flex;align-items:center;gap:8px;}
+.price-feat::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0;}
+.price-btn{width:100%;padding:12px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);border:none;}
+.price-btn.outline{background:transparent;border:1px solid var(--border);color:var(--text2);}
+.price-btn.filled{background:var(--accent);color:#0a1512;}
+#auth-screen{display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.auth-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px 32px;width:100%;max-width:380px;}
+.auth-err{font-size:13px;color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:none;}
+.google-btn{width:100%;padding:13px 18px;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#111;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font);margin-bottom:14px;}
+.app-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;}
+.user-badge{display:flex;align-items:center;gap:6px;padding:5px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;cursor:pointer;font-size:12.5px;color:var(--text2);}
+.udot{width:7px;height:7px;border-radius:50%;background:var(--accent);}
+.course-body{max-width:640px;margin:0 auto;padding:24px 20px 80px;}
+.back-link{font-size:13px;color:var(--text2);cursor:pointer;margin-bottom:18px;display:inline-flex;align-items:center;gap:6px;}
+.back-link:hover{color:var(--accent);}
+.course-hero{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:20px;position:relative;overflow:hidden;}
+.course-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);}
+.course-track-label{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.course-title{font-size:22px;font-weight:800;margin-bottom:10px;letter-spacing:-0.02em;}
+.course-desc{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:12px;}
+.course-meta{display:flex;gap:18px;flex-wrap:wrap;}
+.course-meta-item{font-size:12.5px;color:var(--text2);}
+.modules-list{display:flex;flex-direction:column;gap:10px;}
+.module-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.module-header{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.module-header:hover{background:var(--bg4);}
+.module-num{font-size:11px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;}
+.module-name{font-size:15px;font-weight:600;}
+.module-lessons-count{font-size:12px;color:var(--text2);}
+.lessons-list{border-top:1px solid var(--border);}
+.lesson-row{padding:12px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.1s;}
+.lesson-row:last-child{border-bottom:none;}
+.lesson-row:hover{background:var(--bg4);}
+.lesson-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.lesson-icon.free{background:rgba(45,212,160,0.15);}
+.lesson-icon.locked{background:rgba(255,255,255,0.05);}
+.lesson-title-text{flex:1;font-size:13.5px;}
+.lesson-tag{font-size:10.5px;padding:2px 8px;border-radius:99px;font-weight:600;}
+.lesson-tag.free{background:rgba(45,212,160,0.15);color:var(--accent);}
+.lesson-tag.pro{background:rgba(255,255,255,0.06);color:var(--text2);}
+.lesson-tag.done{background:rgba(45,212,160,0.25);color:var(--accent);}
+.cert-banner{background:linear-gradient(135deg,var(--bg3),var(--bg4));border:1px solid var(--accent);border-radius:12px;padding:16px 18px;margin-top:20px;display:flex;align-items:center;gap:14px;}
+.cert-btn{padding:8px 16px;background:var(--accent);color:#0a1512;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;}
+#lesson-screen{min-height:100vh;background:var(--bg);}
+.lesson-nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;gap:12px;}
+.lesson-nav-title{font-size:14px;font-weight:600;flex:1;}
+.lesson-body{max-width:640px;margin:0 auto;padding:32px 20px 80px;}
+.lesson-label{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.lesson-title{font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-bottom:20px;}
+.lesson-content{font-size:15px;color:var(--text2);line-height:1.8;}
+.lesson-content p{margin-bottom:16px;}
+.lesson-content h3{font-size:17px;font-weight:700;color:var(--text);margin:24px 0 10px;}
+.lesson-content ul{padding-left:20px;margin-bottom:16px;}
+.lesson-content li{margin-bottom:8px;}
+.lesson-content .highlight{background:var(--bg3);border-left:3px solid var(--accent);padding:14px 16px;border-radius:0 8px 8px 0;margin:20px 0;font-size:14px;line-height:1.7;}
+.lesson-content .tip{background:rgba(45,212,160,0.06);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin:20px 0;font-size:14px;}
+.lesson-content .tip strong{color:var(--accent);}
+.lesson-footer{margin-top:40px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:24px;}
+.mark-complete-btn{padding:12px 22px;background:var(--accent);color:#0a1512;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);}
+.mark-complete-btn.done{background:var(--bg3);color:var(--accent);border:1px solid var(--border);}
+#cert-screen{min-height:100vh;background:var(--bg);}
+.cert-page{max-width:700px;margin:40px auto;padding:20px;width:100%;}
+.cert-print-btn{display:flex;gap:10px;margin-bottom:24px;}
+.cert-action{padding:10px 20px;border-radius:8px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--font);border:none;}
+.cert-action.primary{background:var(--accent);color:#0a1512;}
+.cert-action.ghost{background:var(--bg3);color:var(--text2);border:1px solid var(--border);}
+.certificate{background:#fff;color:#1a1a2e;border-radius:16px;padding:48px 40px;text-align:center;position:relative;overflow:hidden;}
+.cert-border{position:absolute;inset:12px;border:2px solid #2dd4a0;border-radius:10px;pointer-events:none;}
+.cert-corner{position:absolute;width:30px;height:30px;border-color:#2dd4a0;border-style:solid;}
+.cert-corner.tl{top:8px;left:8px;border-width:3px 0 0 3px;}
+.cert-corner.tr{top:8px;right:8px;border-width:3px 3px 0 0;}
+.cert-corner.bl{bottom:8px;left:8px;border-width:0 0 3px 3px;}
+.cert-corner.br{bottom:8px;right:8px;border-width:0 3px 3px 0;}
+.cert-logo{font-size:13px;letter-spacing:0.2em;text-transform:uppercase;color:#2dd4a0;margin-bottom:6px;font-weight:700;}
+.cert-academy{font-size:24px;font-weight:800;color:#0a1512;margin-bottom:28px;letter-spacing:-0.02em;}
+.cert-presents{font-size:13px;color:#666;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;}
+.cert-name{font-size:28px;font-weight:800;color:#2dd4a0;margin-bottom:28px;font-style:italic;}
+.cert-for{font-size:13px;color:#666;margin-bottom:8px;}
+.cert-track{font-size:20px;font-weight:800;color:#0a1512;margin-bottom:6px;}
+.cert-sub-text{font-size:13px;color:#666;margin-bottom:32px;}
+.cert-divider{height:1px;background:linear-gradient(90deg,transparent,#2dd4a0,transparent);margin:24px 0;}
+.cert-footer{display:flex;justify-content:space-between;align-items:flex-end;}
+.cert-sig{text-align:center;}
+.cert-sig-line{width:140px;height:1px;background:#ccc;margin:0 auto 6px;}
+.cert-sig-name{font-size:12px;color:#666;}
+.cert-sig-title{font-size:11px;color:#999;}
+.cert-date-text{font-size:12px;color:#666;text-align:right;}
+.cert-id{font-size:10px;color:#bbb;margin-top:20px;}
+.cert-disclaimer-text{font-size:11px;color:#999;margin-top:8px;line-height:1.5;}
+#legal-screen{min-height:100vh;background:var(--bg);}
+.legal-body{max-width:680px;margin:0 auto;padding:40px 20px 80px;}
+.legal-title{font-size:28px;font-weight:800;margin-bottom:6px;letter-spacing:-0.02em;}
+.legal-date{font-size:13px;color:var(--text2);margin-bottom:36px;}
+.legal-body h2{font-size:17px;font-weight:700;margin:28px 0 8px;color:var(--accent);}
+.legal-body p{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:12px;}
+.legal-body ul{padding-left:20px;margin-bottom:12px;}
+.legal-body li{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:6px;}
+.legal-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+.legal-nav-btn{padding:6px 14px;border-radius:99px;border:1px solid var(--border);font-size:12px;color:var(--text2);cursor:pointer;font-family:var(--font);background:transparent;}
+.legal-nav-btn.on{border-color:var(--accent);color:var(--accent);}
+#paywall-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(6px);}
+#paywall-modal.show{display:flex;}
+.paywall-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:36px 28px;width:100%;max-width:360px;text-align:center;}
+.paywall-price{font-size:32px;font-weight:800;margin-bottom:4px;}
+.paywall-price span{font-size:14px;color:var(--text2);font-weight:400;}
+.paywall-feats{text-align:left;display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
+.paywall-feat{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:8px;}
+.paywall-feat::before{content:'✓';color:var(--accent);font-weight:700;}
+.paywall-btn{width:100%;padding:14px;background:var(--accent);color:#0a1512;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);margin-bottom:10px;}
+.paywall-close{background:none;border:none;color:var(--text2);font-size:13px;cursor:pointer;font-family:var(--font);}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+@media print{body>*:not(#cert-screen){display:none!important;}#cert-screen{display:block!important;}.cert-print-btn,.app-header,nav{display:none!important;}}
+</style>
+</head>
+<body>
+<!-- LANDING -->
+<div id="landing-screen">
+<nav><div class="nav-logo" onclick="showScreen('landing-screen')"><div class="nav-icon">✦</div><div class="nav-name">SkillUp</div></div><div class="nav-right"><button class="nav-btn ghost" onclick="showLegal('terms')">Legal</button><button class="nav-btn ghost" onclick="goAuth('signin')">Sign in</button><button class="nav-btn solid" onclick="goAuth('signup')">Start free</button></div></nav>
+<div class="hero">
+<div class="hero-badge">✦ AI Skills for Every Profession</div>
+<h1 class="hero-title">Learn AI for<br><span>your profession.</span></h1>
+<p class="hero-sub">Real lessons, real prompts, completion certificates. Start with Universal Foundations then go deep on your field.</p>
+<div class="hero-btns"><button class="hero-btn primary" onclick="goAuth('signup')">Start free — no card needed</button><button class="hero-btn secondary" onclick="document.getElementById('tracks-section').scrollIntoView({behavior:'smooth'})">See all tracks</button></div>
+<div class="hero-stats"><div class="hero-stat"><div class="hero-stat-num">7</div><div class="hero-stat-label">Profession tracks</div></div><div class="hero-stat"><div class="hero-stat-num">30+</div><div class="hero-stat-label">Lessons</div></div><div class="hero-stat"><div class="hero-stat-num">🏆</div><div class="hero-stat-label">Certificates</div></div></div>
+</div>
+<div class="section"><div class="section-label">Curriculum</div><div class="section-title">Two steps to AI fluency.</div><div class="section-sub">Start with the shared baseline, then go deep on your field.</div>
+<div class="found-card"><div class="found-badge">✦ Start here · Free</div><div class="found-title">Universal Foundations</div><div class="found-desc">How LLMs work, the RCCF prompting framework, tool selection, and verification patterns.</div><button class="found-btn" onclick="goAuth('signup')">Begin foundations →</button></div>
+</div>
+<div class="section" id="tracks-section" style="padding-top:0"><div class="section-label">Profession Tracks</div><div class="section-title">Pick your track.</div><div class="section-sub">Built for how your profession actually works.</div>
+<div class="tracks-grid">
+<div class="track-card" onclick="goAuth('signup')"><div class="track-icon" style="background:rgba(96,165,250,0.15)">⚖️</div><div><div class="track-name">Legal</div><div class="track-desc">Contracts, case workflows, document analysis.</div><div class="track-meta">3 modules · 6 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
+<div class="track-card" onclick="goAuth('signup')"><div class="track-icon" style="background:rgba(45,212,160,0.15)">💵</div><div><div class="track-name">Finance</div><div class="track-desc">Statements, memos, and analysis.</div><div class="track-meta">3 modules · 6 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
+<div class="track-card" onclick="goAuth('signup')"><div class="track-icon" style="background:rgba(251,146,60,0.15)">🏥</div><div><div class="track-name">Healthcare</div><div class="track-desc">Documentation and care coordination.</div><div class="track-meta">2 modules · 4 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
+<div class="track-card" onclick="goAuth('signup')"><div class="track-icon" style="background:rgba(167,139,250,0.15)">🏠</div><div><div class="track-name">Real Estate</div><div class="track-desc">Listings, comps, client communications.</div><div class="track-meta">3 modules · 6 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
+<div class="track-card" onclick="goAuth('signup')"><div class="track-icon" style="background:rgba(244,196,48,0.15)">🏡</div><div><div class="track-name">Care & RCFE</div><div class="track-desc">Resident documentation, compliance, care planning.</div><div class="track-meta">2 modules · 4 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
+<div class="track-card" onclick="goAuth('signup')"><div class="track-icon" style="background:rgba(45,212,160,0.1)">🏗️</div><div><div class="track-name">Property Management</div><div class="track-desc">Tenant comms, lease summaries, maintenance logs.</div><div class="track-meta">2 modules · 4 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
+<div class="track-card" onclick="goAuth('signup')"><div class="track-icon" style="background:rgba(99,102,241,0.15)">🤖</div><div><div class="track-name">AI & Technology</div><div class="track-desc">AI landscape, business strategy, ethics, and responsible use.</div><div class="track-meta">3 modules · 6 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
+</div></div>
+<div class="section"><div class="section-label">Pricing</div><div class="section-title">Start free. Go deep when ready.</div><div class="section-sub">Universal Foundations and first lessons always free. Unlock full tracks and certificates with Pro.</div>
+<div class="pricing-grid">
+<div class="price-card"><div class="price-name">Free</div><div class="price-amount">$0</div><div class="price-desc">Universal Foundations + first lesson of every track. No card required.</div><div class="price-feats"><div class="price-feat">Universal Foundations — full access</div><div class="price-feat">First lesson of every track</div><div class="price-feat">No credit card</div></div><button class="price-btn outline" onclick="goAuth('signup')">Start free</button></div>
+<div class="price-card featured"><div class="price-name">Pro</div><div class="price-amount">$19<span>/month</span></div><div class="price-desc">Full access to every track, lesson, and completion certificates.</div><div class="price-feats"><div class="price-feat">Everything in Free</div><div class="price-feat">All 6 profession tracks unlocked</div><div class="price-feat">All modules and lessons</div><div class="price-feat">Completion certificates per track</div><div class="price-feat">New tracks as they launch</div><div class="price-feat">Cancel anytime</div></div><button class="price-btn filled" onclick="goAuth('signup')">Get Pro — $19/mo</button></div>
+</div></div>
+<div style="text-align:center;padding:28px 20px 44px;border-top:1px solid var(--border);">
+<div style="font-size:12px;color:var(--text2);opacity:0.5;margin-bottom:12px;">A RunP8 product · SkillUp Academy</div>
+<div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;">
+<a href="https://thejudgy.com" style="font-size:12px;color:var(--text2);opacity:0.6;" target="_blank">TheJudgy</a><a href="https://postpilots.xyz" style="font-size:12px;color:var(--text2);opacity:0.6;" target="_blank">PostPilots</a><a href="https://rentyapp.net" style="font-size:12px;color:var(--text2);opacity:0.6;" target="_blank">RentyApp</a><a href="https://title22.app" style="font-size:12px;color:var(--text2);opacity:0.6;" target="_blank">Title22</a><a href="https://ownsite.app" style="font-size:12px;color:var(--text2);opacity:0.6;" target="_blank">OwnSite</a><a href="https://myrental.space" style="font-size:12px;color:var(--text2);opacity:0.6;" target="_blank">MyRental.space</a>
+</div>
+<div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+<span onclick="showLegal('terms')" style="font-size:11px;color:var(--text2);opacity:0.5;cursor:pointer;">Terms</span><span onclick="showLegal('privacy')" style="font-size:11px;color:var(--text2);opacity:0.5;cursor:pointer;">Privacy</span><span onclick="showLegal('disclaimer')" style="font-size:11px;color:var(--text2);opacity:0.5;cursor:pointer;">Disclaimer</span><span onclick="showLegal('refund')" style="font-size:11px;color:var(--text2);opacity:0.5;cursor:pointer;">Refund Policy</span><span onclick="showLegal('certificate')" style="font-size:11px;color:var(--text2);opacity:0.5;cursor:pointer;">Certificate Policy</span>
+</div>
+</div>
+</div>
+
+<!-- AUTH -->
+<div id="auth-screen" class="hidden">
+<nav><div class="nav-logo" onclick="showScreen('landing-screen')"><div class="nav-icon">✦</div><div class="nav-name">SkillUp</div></div></nav>
+<div style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 65px);padding:24px;">
+<div class="auth-card">
+<div style="font-size:11px;color:var(--accent);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:10px;">✦ SkillUp Academy</div>
+<div style="font-size:20px;font-weight:800;margin-bottom:6px;" id="auth-title">Create your free account</div>
+<div style="font-size:13.5px;color:var(--text2);margin-bottom:24px;line-height:1.5;">Universal Foundations and first lessons are completely free. No card needed.</div>
+<div class="auth-err" id="auth-err"></div>
+<button class="google-btn" onclick="signInGoogle()"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.14 0 5.95 1.08 8.17 2.84l6.09-6.09C34.46 3.39 29.5 1.5 24 1.5 14.82 1.5 7.07 7.07 3.87 14.94l7.08 5.5C12.6 13.38 17.85 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.64-.15-3.22-.42-4.74H24v9h12.42c-.54 2.9-2.18 5.36-4.64 7.02l7.18 5.58C43.08 37.28 46.1 31.32 46.1 24.5z"/><path fill="#FBBC05" d="M10.95 28.44A14.5 14.5 0 0 1 9.5 24c0-1.55.27-3.05.74-4.44l-7.08-5.5A22.47 22.47 0 0 0 1.5 24c0 3.61.87 7.02 2.4 10.03l7.05-5.59z"/><path fill="#34A853" d="M24 46.5c5.5 0 10.12-1.82 13.5-4.94l-7.18-5.58C28.6 37.7 26.42 38.5 24 38.5c-6.15 0-11.4-3.88-13.05-9.44l-7.05 5.59C7.07 42.43 14.82 46.5 24 46.5z"/></svg>Continue with Google</button>
+<div style="font-size:12px;color:var(--text2);text-align:center;opacity:0.7;line-height:1.6;">By continuing you agree to our <span onclick="showLegal('terms')" style="color:var(--accent);cursor:pointer;">Terms</span> and <span onclick="showLegal('privacy')" style="color:var(--accent);cursor:pointer;">Privacy Policy</span>.</div>
+<div style="margin-top:14px;text-align:center;"><span class="back-link" onclick="showScreen('landing-screen')">← Back</span></div>
+</div></div></div>
+
+<!-- APP DASHBOARD -->
+<div id="app-screen" class="hidden">
+<div class="app-header"><div><div style="font-size:16px;font-weight:700;">✦ SkillUp</div><div style="font-size:12px;color:var(--text2);margin-top:2px;">Your learning dashboard</div></div><div class="user-badge" onclick="signOut()"><div class="udot"></div><span id="user-display">Account</span></div></div>
+<div class="course-body">
+<div class="section-label" style="margin-bottom:6px;">Curriculum</div>
+<div style="font-size:1.5rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px;">Learn AI for your profession.</div>
+<div style="font-size:13.5px;color:var(--text2);margin-bottom:24px;">Start with Universal Foundations, then pick your track.</div>
+<div class="found-card" style="cursor:pointer;" onclick="openTrack('foundations')"><div class="found-badge">✦ Start here · Free</div><div class="found-title">Universal Foundations</div><div class="found-desc">How LLMs work, the RCCF prompting framework, tool selection, and verification patterns.</div><button class="found-btn">Begin foundations →</button></div>
+<div class="section-label" style="margin-bottom:14px;">Profession Tracks</div>
+<div class="tracks-grid">
+<div class="track-card" onclick="openTrack('legal')"><div class="track-icon" style="background:rgba(96,165,250,0.15)">⚖️</div><div><div class="track-name">Legal</div><div class="track-desc">Contracts, case workflows, document analysis.</div><div class="track-meta">3 modules · 6 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
+<div class="track-card" onclick="openTrack('finance')"><div class="track-icon" style="background:rgba(45,212,160,0.15)">💵</div><div><div class="track-name">Finance</div><div class="track-desc">Statements, memos, and analysis.</div><div class="track-meta">3 modules · 6 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
+<div class="track-card" onclick="openTrack('healthcare')"><div class="track-icon" style="background:rgba(251,146,60,0.15)">🏥</div><div><div class="track-name">Healthcare</div><div class="track-desc">Documentation and care coordination.</div><div class="track-meta">2 modules · 4 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
+<div class="track-card" onclick="openTrack('realestate')"><div class="track-icon" style="background:rgba(167,139,250,0.15)">🏠</div><div><div class="track-name">Real Estate</div><div class="track-desc">Listings, comps, client communications.</div><div class="track-meta">3 modules · 6 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
+<div class="track-card" onclick="openTrack('care')"><div class="track-icon" style="background:rgba(244,196,48,0.15)">🏡</div><div><div class="track-name">Care & RCFE</div><div class="track-desc">Resident documentation, compliance, care planning.</div><div class="track-meta">2 modules · 4 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
+<div class="track-card" onclick="openTrack('property')"><div class="track-icon" style="background:rgba(45,212,160,0.1)">🏗️</div><div><div class="track-name">Property Management</div><div class="track-desc">Tenant comms, lease summaries, maintenance logs.</div><div class="track-meta">2 modules · 4 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
+<div class="track-card" onclick="openTrack('aitrack')"><div class="track-icon" style="background:rgba(99,102,241,0.15)">🤖</div><div><div class="track-name">AI & Technology</div><div class="track-desc">AI landscape, business strategy, ethics, and responsible use.</div><div class="track-meta">3 modules · 6 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
+</div>
+<div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border);display:flex;gap:12px;flex-wrap:wrap;">
+<span onclick="showLegal('terms')" style="font-size:12px;color:var(--text2);opacity:0.6;cursor:pointer;">Terms</span><span onclick="showLegal('privacy')" style="font-size:12px;color:var(--text2);opacity:0.6;cursor:pointer;">Privacy</span><span onclick="showLegal('disclaimer')" style="font-size:12px;color:var(--text2);opacity:0.6;cursor:pointer;">Disclaimer</span><span onclick="showLegal('refund')" style="font-size:12px;color:var(--text2);opacity:0.6;cursor:pointer;">Refund</span><span onclick="showLegal('certificate')" style="font-size:12px;color:var(--text2);opacity:0.6;cursor:pointer;">Certificate Policy</span>
+</div>
+</div></div>
+
+<!-- TRACK VIEW -->
+<div id="track-screen" class="hidden">
+<div class="app-header"><div><div style="font-size:16px;font-weight:700;">✦ SkillUp</div><div style="font-size:12px;color:var(--text2);margin-top:2px;" id="track-screen-label">Track</div></div><div class="user-badge" onclick="signOut()"><div class="udot"></div><span id="user-display2">Account</span></div></div>
+<div class="course-body">
+<div class="back-link" onclick="showScreen('app-screen')">← Back to dashboard</div>
+<div class="course-hero"><div class="course-track-label" id="track-label">Track</div><div class="course-title" id="track-title">Track Title</div><div class="course-desc" id="track-desc">Description</div><div class="course-meta"><div class="course-meta-item" id="track-meta1">📚</div><div class="course-meta-item" id="track-meta2">📖</div></div></div>
+<div class="modules-list" id="modules-list"></div>
+<div id="cert-banner-container"></div>
+</div></div>
+
+<!-- LESSON VIEW -->
+<div id="lesson-screen" class="hidden">
+<div class="lesson-nav"><span class="back-link" style="margin:0;" onclick="closeLesson()">← Back</span><div class="lesson-nav-title" id="lesson-nav-title">Lesson</div></div>
+<div class="lesson-body">
+<div class="lesson-label" id="lesson-label">Module</div>
+<div class="lesson-title" id="lesson-title">Lesson Title</div>
+<div class="lesson-content" id="lesson-content"></div>
+<div class="lesson-footer">
+<button style="background:none;border:none;font-family:var(--font);font-size:13px;color:var(--text2);cursor:pointer;" onclick="closeLesson()">← Back to track</button>
+<button class="mark-complete-btn" id="complete-btn" onclick="markComplete()">Mark complete ✓</button>
+</div></div></div>
+
+<!-- CERTIFICATE -->
+<div id="cert-screen" class="hidden">
+<div class="app-header"><div><div style="font-size:16px;font-weight:700;">✦ SkillUp Academy</div><div style="font-size:12px;color:var(--text2);margin-top:2px;">Completion Certificate</div></div><div class="user-badge" onclick="showScreen('app-screen')"><div class="udot"></div><span id="user-display3">Account</span></div></div>
+<div class="cert-page">
+<div class="cert-print-btn"><button class="cert-action primary" onclick="window.print()">🖨 Print Certificate</button><button class="cert-action ghost" onclick="showScreen('app-screen')">← Dashboard</button></div>
+<div class="certificate">
+<div class="cert-border"></div><div class="cert-corner tl"></div><div class="cert-corner tr"></div><div class="cert-corner bl"></div><div class="cert-corner br"></div>
+<div class="cert-logo">✦ SkillUp Academy</div>
+<div class="cert-academy">Certificate of Completion</div>
+<div class="cert-presents">THIS CERTIFIES THAT</div>
+<div class="cert-name" id="cert-name">Student Name</div>
+<div class="cert-for">has successfully completed the</div>
+<div class="cert-track" id="cert-track">Track Name</div>
+<div class="cert-sub-text" id="cert-sub">AI Professional Development Program</div>
+<div class="cert-divider"></div>
+<div class="cert-footer">
+<div class="cert-sig"><div class="cert-sig-line"></div><div class="cert-sig-name">SkillUp Academy</div><div class="cert-sig-title">Issuing Authority</div></div>
+<div class="cert-date-text"><div id="cert-date">Date</div><div style="font-size:11px;color:#bbb;margin-top:4px;">skillupapp.app</div></div>
+</div>
+<div class="cert-id" id="cert-id">Certificate ID: SKU-0000000</div>
+<div class="cert-disclaimer-text">This certificate confirms completion of SkillUp Academy's AI professional development curriculum. It is a record of educational achievement and does not confer professional licensure, accreditation, or state certification. Issued by SkillUp Academy, a RunP8 product.</div>
+</div></div></div>
+
+<!-- LEGAL -->
+<div id="legal-screen" class="hidden">
+<nav><div class="nav-logo" onclick="showScreen('landing-screen')"><div class="nav-icon">✦</div><div class="nav-name">SkillUp</div></div></nav>
+<div class="legal-body">
+<div class="legal-nav">
+<button class="legal-nav-btn" onclick="showLegal('terms')" id="ln-terms">Terms</button>
+<button class="legal-nav-btn" onclick="showLegal('privacy')" id="ln-privacy">Privacy</button>
+<button class="legal-nav-btn" onclick="showLegal('disclaimer')" id="ln-disclaimer">Disclaimer</button>
+<button class="legal-nav-btn" onclick="showLegal('refund')" id="ln-refund">Refund Policy</button>
+<button class="legal-nav-btn" onclick="showLegal('certificate')" id="ln-certificate">Certificate Policy</button>
+</div>
+<div id="legal-content"></div>
+</div></div>
+
+<!-- PAYWALL -->
+<div id="paywall-modal">
+<div class="paywall-card">
+<div style="font-size:36px;margin-bottom:16px;">🔐</div>
+<div style="font-size:20px;font-weight:800;margin-bottom:8px;">This lesson is Pro</div>
+<div style="font-size:13.5px;color:var(--text2);margin-bottom:24px;line-height:1.6;">Unlock all lessons and earn completion certificates with SkillUp Pro.</div>
+<div class="paywall-price">$19<span>/month</span></div>
+<div class="paywall-feats" style="margin-top:16px;">
+<div class="paywall-feat">All 6 profession tracks</div>
+<div class="paywall-feat">Every module and lesson</div>
+<div class="paywall-feat">Completion certificates</div>
+<div class="paywall-feat">New tracks as they launch</div>
+<div class="paywall-feat">Cancel anytime</div>
+</div>
+<button class="paywall-btn" onclick="goUpgrade()">Unlock Pro — $19/month</button>
+<button class="paywall-close" onclick="closePaywall()">Maybe later</button>
+</div></div>
+<script>
+const SUPA_URL='https://nwlhsshvqmbhemhxcran.supabase.co';
+const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53bGhzc2h2cW1iaGVtaHhjcmFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTEzOTIsImV4cCI6MjA5NTU2NzM5Mn0.2yASMx57IUNjEW8bMs8FwXnIz4cLsE1ftqD35QAOqE8';
+const STRIPE_LINK='#';
+const {createClient}=supabase;
+const sb=createClient(SUPA_URL,SUPA_ANON,{auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true}});
+let currentUser=null,userPlan='free',currentTrackId=null,currentLesson=null;
+let completedLessons=JSON.parse(localStorage.getItem('skillup_completed')||'{}');
+
+const L={
+ f:`<p>A Large Language Model (LLM) is a type of AI trained on massive amounts of text to predict and generate language. Unlike a search engine that retrieves existing pages, an LLM generates new text based on patterns learned during training.</p><h3>What this means for you</h3><p>When you ask an AI a question, it is not looking up an answer — it is generating one token at a time based on probability. This is why it can sound confident even when wrong.</p><div class="highlight"><strong>Key insight:</strong> LLMs are pattern-completion engines. They predict what text should come next. Your job is to give them context that makes the right pattern obvious.</div><h3>Three things every professional needs to know</h3><ul><li><strong>Context is everything.</strong> The model has no memory between sessions. Every prompt is a fresh start.</li><li><strong>Confidence does not equal accuracy.</strong> AI sounds certain even when wrong. Always verify factual claims.</li><li><strong>Specificity produces quality.</strong> Vague prompts produce vague output. Specific prompts produce useful output.</li></ul><div class="tip"><strong>Try this:</strong> Ask an AI the same question twice — once vague, once with full context. The difference will change how you prompt forever.</div>`,
+ g:`<p>AI errors fall into predictable categories. Once you know the patterns, you can spot and prevent them.</p><h3>The four failure modes</h3><ul><li><strong>Hallucination:</strong> The model generates plausible-sounding but false information — fake citations, wrong dates, invented case names. Dangerous for legal and healthcare professionals.</li><li><strong>Outdated information:</strong> Models have a training cutoff. Anything after that date may be missing or wrong.</li><li><strong>Context collapse:</strong> In long conversations, the model may lose track of earlier details. Restate key facts in critical prompts.</li><li><strong>Sycophancy:</strong> Models are trained to be agreeable. If you push back on a correct answer, they may give you a wrong one.</li></ul><h3>Verification protocol</h3><div class="highlight">For any factual claim: ask the AI for the source. Then verify the source independently. If it cannot produce a verifiable source, treat the claim as unconfirmed.</div><div class="tip"><strong>Professional standard:</strong> AI output is a first draft, not a final answer. Your professional judgment is always the last layer.</div>`,
+ h:`<p>The RCCF Framework is the single most transferable prompting skill you will learn. It works across Claude, ChatGPT, Gemini, and every other LLM.</p><h3>The four elements</h3><ul><li><strong>Role</strong> — Tell the AI who it is.</li><li><strong>Context</strong> — Give it the background it needs.</li><li><strong>Command</strong> — Be specific about exactly what you want.</li><li><strong>Format</strong> — Tell it how to structure the output.</li></ul><div class="highlight"><strong>Without RCCF:</strong> "Summarize this contract."<br><br><strong>With RCCF:</strong> "You are a senior contracts attorney [Role]. I am reviewing a commercial lease for a first-time business owner [Context]. Identify the three most important obligations on my client and flag unusual clauses [Command]. Use plain English bullet points, no jargon [Format]."</div><p>Same AI. Same model. Dramatically different result.</p>`,
+ i:`<p>Once you have RCCF internalized, the next level is using AI across multi-step workflows.</p><h3>Prompt chaining</h3><div class="highlight"><strong>Example chain for a client memo:</strong><br>Step 1: Summarize this 40-page agreement → output<br>Step 2: Identify the top 3 risks for my client → output<br>Step 3: Draft a client memo explaining those risks → final output</div><h3>Iterative refinement</h3><p>Rarely accept first output as final. Add refining instructions: "Make this shorter," "Rewrite the second paragraph," "Add a section on what happens if the deadline is missed."</p><h3>Persona consistency</h3><p>For recurring tasks, develop a standard system prompt you reuse. "You are [Name], a [profession]. You write in [style]. Your audience is always [audience]." Save this and start every session with it.</p><div class="tip"><strong>Time saver:</strong> Build a prompt library. Keep your best RCCF prompts in a document. Prompts are professional assets.</div>`,
+ j:`<p>Contract review is one of the highest-leverage uses of AI in legal practice.</p><h3>The Review Prompt Template</h3><div class="highlight"><strong>Role:</strong> You are an experienced contracts attorney.<br><strong>Context:</strong> [Paste contract or describe it — parties, type, jurisdiction]<br><strong>Command:</strong> Identify (1) unusual or non-standard clauses, (2) missing standard protections, (3) ambiguous language, (4) red flags for my client.<br><strong>Format:</strong> Organize by section. Rate each issue High / Medium / Low risk. Plain English.</div><h3>What to look for</h3><ul><li>Indemnification clauses that are one-sided</li><li>Limitation of liability caps that are too low</li><li>Automatic renewal clauses buried in boilerplate</li><li>IP assignment clauses broader than the work described</li></ul><div class="tip"><strong>Always verify:</strong> AI identifies patterns — you apply legal judgment. Never rely solely on AI output for contract advice.</div>`,
+ k:`<p>Beyond summarizing, AI can be trained to think like a risk analyst — categorizing every clause by risk level.</p><h3>The Risk Matrix Prompt</h3><div class="highlight"><strong>Role:</strong> You are a senior transactional attorney specializing in risk assessment.<br><strong>Context:</strong> [Contract type, client type, industry, deal size]<br><strong>Command:</strong> Review each clause and assign: RED (must negotiate), YELLOW (negotiate if possible), GREEN (standard, acceptable). For each RED and YELLOW, explain the risk and suggest alternative language.<br><strong>Format:</strong> Table — Clause | Rating | Risk | Suggested Language.</div><div class="tip"><strong>Build a playbook:</strong> After using AI on 10 similar contracts, document your firm's standard positions into a reusable prompt.</div>`,
+ l:`<p>One of the most common complaints clients have about attorneys is that communications are too complex. AI solves this without sacrificing accuracy.</p><h3>The Client Summary Prompt</h3><div class="highlight"><strong>Role:</strong> You are an attorney writing to a non-lawyer client.<br><strong>Context:</strong> [Summary of the legal matter or document. Describe client: first-time business owner, elderly individual, sophisticated investor]<br><strong>Command:</strong> Explain the key points in plain English. Tell them what they need to know, what they need to decide, and what questions they should ask me.<br><strong>Format:</strong> Short paragraphs. No Latin. No passive voice. Under 300 words.</div><h3>Calibrating for your client</h3><ul><li>Sophisticated clients: allow technical language, focus on business implications</li><li>First-time clients: use analogies, avoid all jargon</li><li>Anxious clients: lead with reassurance, then complexity</li></ul>`,
+ m:`<p>Demand letters require a precise tone — firm, professional, and legally sufficient.</p><h3>The Demand Letter Prompt</h3><div class="highlight"><strong>Role:</strong> You are an experienced litigation attorney drafting a pre-litigation demand letter.<br><strong>Context:</strong> [Facts: who owes what, basis for the claim, what has happened, deadline requirements]<br><strong>Command:</strong> Draft a demand letter stating the legal basis, specific amount demanded, deadline for response, and consequences of non-response. Tone: firm and professional — not threatening, not apologetic.<br><strong>Format:</strong> Formal letter. Date, recipient, reference line, body, signature block.</div><p>After the first draft, add: "Adjust the tone — it should feel like a firm warning from a confident attorney." Iterate until the tone matches your strategy.</p>`,
+ n:`<p>Case summaries are essential for onboarding co-counsel, briefing clients, and keeping complex matters organized.</p><h3>The Case Summary Prompt</h3><div class="highlight"><strong>Role:</strong> You are a paralegal creating a case summary for attorney review.<br><strong>Context:</strong> [Paste relevant documents, chronology, party list, key facts]<br><strong>Command:</strong> Create a case summary covering: (1) parties and roles, (2) key facts in chronological order, (3) legal claims and defenses, (4) current status, (5) upcoming deadlines, (6) open issues.<br><strong>Format:</strong> Organized sections with headers. Flag anything uncertain or unverified.</div><h3>Keeping it current</h3><p>After each significant event, prompt AI to update the summary with the new development. Paste the existing summary plus new facts and ask AI to integrate and update.</p>`,
+ o:`<p>Deposition prep is time-intensive and high-stakes. AI can generate question sets, identify inconsistencies, and structure your outline in a fraction of the time.</p><h3>Question Generation Prompt</h3><div class="highlight"><strong>Role:</strong> You are an experienced trial attorney preparing for a deposition.<br><strong>Context:</strong> [Witness name and role, what you know, key issues, documents they authored or received]<br><strong>Command:</strong> Generate a deposition outline covering: background and credibility, knowledge of key events, specific documents they are connected to, inconsistencies to probe, and questions to lock in their version of events.<br><strong>Format:</strong> Organized by topic. Each section with 5-8 questions.</div><h3>Inconsistency detection</h3><p>Paste prior statements from the same witness and prompt: "Compare these statements and identify inconsistencies, contradictions, or gaps I should explore in the deposition."</p>`,
+ p:`<p>Financial statements contain patterns that AI can surface quickly — variance analysis, ratio calculations, and narrative summaries.</p><h3>Statement Review Prompt</h3><div class="highlight"><strong>Role:</strong> You are a CFA-certified financial analyst.<br><strong>Context:</strong> [Paste financial data, specify period, company type, industry]<br><strong>Command:</strong> Identify key trends, calculate relevant ratios, flag anomalies, and summarize financial health in plain English.<br><strong>Format:</strong> Executive summary first. Then detailed findings with specific numbers. Flag anything requiring additional investigation.</div><h3>Key ratios to always request</h3><ul><li>Liquidity: Current ratio, quick ratio</li><li>Profitability: Gross margin, net margin, ROE, ROA</li><li>Leverage: Debt-to-equity, interest coverage</li></ul><div class="tip"><strong>Verify the math:</strong> AI can make arithmetic errors. Spot-check calculated ratios.</div>`,
+ q:`<p>Variance analysis — explaining why actuals differ from budget — is one of the most time-consuming recurring tasks in finance.</p><h3>Variance Narrative Prompt</h3><div class="highlight"><strong>Role:</strong> You are a senior financial analyst writing a variance analysis memo for the CFO.<br><strong>Context:</strong> Budget: [numbers]. Actual: [numbers]. Period: [month/quarter]. Known factors: [list]<br><strong>Command:</strong> Write a variance analysis explaining key drivers of the difference. For each material variance, explain the cause and whether it is expected to continue.<br><strong>Format:</strong> Executive summary (2-3 sentences). Then line-by-line for material variances. Professional memo tone.</div><p>Export variance data to a simple table. Paste it directly into the prompt. Add any context you know and AI will incorporate it into the narrative.</p>`,
+ r:`<p>Investment memos require clear structure and precise language. AI accelerates the drafting; your analysis drives the conclusions.</p><h3>Investment Memo Prompt</h3><div class="highlight"><strong>Role:</strong> You are a senior investment analyst drafting a memo for an investment committee.<br><strong>Context:</strong> Investment: [describe]. Thesis: [your thesis]. Key data: [financial highlights]. Risks: [known risks]<br><strong>Command:</strong> Draft an investment memo covering: executive summary, investment thesis, financial analysis, key risks and mitigants, recommendation.<br><strong>Format:</strong> Professional memo. Lead with the recommendation, not the background. Bullet points for risks.</div><h3>Audience calibration</h3><ul><li>Investment committee: lead with recommendation, support with analysis</li><li>Retail clients: plain English, focus on outcomes</li><li>Institutional clients: technical depth, stress test assumptions</li></ul>`,
+ s:`<p>Quarterly client reporting is repetitive but high-stakes. AI handles the narrative; you handle the relationships.</p><h3>Portfolio Review Narrative Prompt</h3><div class="highlight"><strong>Role:</strong> You are a wealth manager writing a quarterly portfolio review for a client.<br><strong>Context:</strong> Client profile: [risk tolerance, goals, time horizon]. Performance: [returns, benchmarks]. Market context: [summary of the quarter]<br><strong>Command:</strong> Write a client-friendly quarterly review explaining performance in context, highlighting key decisions, and reinforcing the long-term strategy.<br><strong>Format:</strong> Warm but professional. Under 400 words. No jargon. End with a forward-looking statement.</div>`,
+ t:`<p>Regulatory filings — 10-Ks, proxy statements, risk disclosures — are dense. AI extracts what matters in minutes.</p><h3>Filing Summary Prompt</h3><div class="highlight"><strong>Role:</strong> You are a buy-side analyst reviewing a regulatory filing.<br><strong>Context:</strong> [Paste or describe the filing. Specify what you care about: risk factors, MD&A, guidance, related party transactions]<br><strong>Command:</strong> Extract and summarize: (1) risk factors that are new or changed, (2) management commentary on performance and outlook, (3) red flags in footnotes, (4) guidance changes.<br><strong>Format:</strong> Bullet points by category. Flag anything unusual or contradicting prior communications.</div>`,
+ u:`<p>Risk documentation is required for compliance, audit, and governance. AI drafts the framework; your judgment fills the substance.</p><h3>Risk Register Prompt</h3><div class="highlight"><strong>Role:</strong> You are a risk manager creating documentation for an audit committee.<br><strong>Context:</strong> Entity: [describe]. Key activities: [list]. Known risks: [list]<br><strong>Command:</strong> Build a risk register identifying financial, operational, regulatory, and reputational risks. For each risk, assess likelihood (High/Medium/Low), impact (High/Medium/Low), and suggest a mitigant.<br><strong>Format:</strong> Table — Risk | Category | Likelihood | Impact | Mitigant | Owner.</div>`,
+ v:`<p>Clinical documentation is one of the biggest time burdens in healthcare. AI dramatically reduces documentation time while improving consistency.</p><h3>SOAP Note Prompt</h3><div class="highlight"><strong>Role:</strong> You are a clinical documentation specialist.<br><strong>Context:</strong> Patient encounter: [Age, chief complaint, history, vitals, findings, assessment, plan]<br><strong>Command:</strong> Draft a SOAP note based on this encounter.<br><strong>Format:</strong> Standard SOAP format. Clinical terminology. Flag anything needing provider verification.</div><div class="tip"><strong>Non-negotiable:</strong> AI drafts save time — clinical judgment remains entirely yours. Never finalize AI-generated notes without provider review. HIPAA applies to any PHI you input.</div>`,
+ w:`<p>Discharge summaries are critical for care continuity and frequently cited in readmission risk. AI produces consistent, complete summaries faster than manual dictation.</p><h3>Discharge Summary Prompt</h3><div class="highlight"><strong>Role:</strong> You are a clinical documentation specialist creating a discharge summary for physician review.<br><strong>Context:</strong> Patient: [age, sex, admit/discharge dates]. Admission diagnosis: []. Hospital course: [key events]. Discharge diagnosis: []. Medications at discharge: []. Follow-up plan: []<br><strong>Command:</strong> Draft a discharge summary covering all standard elements. Flag any gaps where information is missing.<br><strong>Format:</strong> Standard discharge summary format. Clear section headers. Medication list in table format.</div>`,
+ x:`<p>Care plans must be individualized, goal-oriented, and updated regularly. AI accelerates the drafting while you supply the clinical knowledge.</p><h3>Care Plan Prompt</h3><div class="highlight"><strong>Role:</strong> You are a care coordinator creating an initial care plan for clinical review.<br><strong>Context:</strong> Patient: [age, diagnoses, functional status, cognitive status, social situation, goals of care, patient preferences]<br><strong>Command:</strong> Draft a person-centered care plan covering: medical management goals, functional/ADL support, psychosocial needs, patient/family education, follow-up and monitoring schedule.<br><strong>Format:</strong> Goal-oriented format. Each problem with a measurable goal and intervention. Flag items requiring physician orders.</div>`,
+ y:`<p>Referral letters and care transition documentation are high-frequency, time-intensive tasks ideal for AI assistance.</p><h3>Referral Letter Prompt</h3><div class="highlight"><strong>Role:</strong> You are a clinical coordinator drafting a referral letter for physician signature.<br><strong>Context:</strong> Referring provider: []. Receiving provider/specialty: []. Patient: [age, diagnoses, relevant history]. Reason for referral: []. Urgency: [routine/urgent/emergent]. Recent results: []<br><strong>Command:</strong> Draft a professional referral letter clearly communicating the clinical question, relevant background, and what you are asking the specialist to address.<br><strong>Format:</strong> Formal letter. Under 300 words. Lead with the clinical question, not the history.</div>`,
+ z:`<p>Listing descriptions are pure prompt engineering. The right input produces compelling copy. The wrong input produces generic filler.</p><h3>Listing Description Prompt</h3><div class="highlight"><strong>Role:</strong> You are an experienced real estate copywriter.<br><strong>Context:</strong> Property: [beds, baths, sqft, lot, year built, location, unique features, recent updates, price]<br><strong>Command:</strong> Write a compelling listing description that highlights the lifestyle, not just the specs. Lead with the strongest feature. Create an emotional connection.<br><strong>Format:</strong> 150-200 words. No cliches. End with a subtle call to action.</div><h3>What makes listings stand out</h3><ul><li>Lead with a specific, vivid detail — not "beautiful kitchen" but "chef's kitchen with quartz waterfall island"</li><li>Address the buyer's lifestyle, not the seller's features</li></ul>`,
+ aa:`<p>Neighborhood descriptions are reusable assets. Write them once with AI, refine them, and use across all listings in that area.</p><h3>Neighborhood Description Prompt</h3><div class="highlight"><strong>Role:</strong> You are a local real estate expert who knows this neighborhood intimately.<br><strong>Context:</strong> Neighborhood: [name, city, character, highlights, price range, buyer profile]<br><strong>Command:</strong> Write a neighborhood description that makes a buyer who has never visited want to live here. Be specific — name actual streets or landmarks if you know them.<br><strong>Format:</strong> 100-150 words. Conversational but professional. No superlatives without specifics.</div>`,
+ ab:`<p>When presenting offers to sellers or explaining the offer process to buyers, clear written communication builds trust and protects you professionally.</p><h3>Offer Summary Prompt (for sellers)</h3><div class="highlight"><strong>Role:</strong> You are a listing agent presenting multiple offers to a seller client.<br><strong>Context:</strong> Offers received: [summarize each — price, terms, financing, contingencies, close date]. Seller goals: [price priority, timeline, certainty]<br><strong>Command:</strong> Write an offer comparison summary that helps my client understand the strengths and weaknesses of each offer relative to their goals. Be objective — do not recommend, just clarify.<br><strong>Format:</strong> Table comparing key terms, followed by a plain-English narrative for each offer.</div>`,
+ ac:`<p>Consistent market updates keep you top of mind with your sphere. AI makes it fast enough to actually do monthly.</p><h3>Market Update Email Prompt</h3><div class="highlight"><strong>Role:</strong> You are a knowledgeable local real estate agent writing a monthly market update for your client database.<br><strong>Context:</strong> Market data for [area, month]: [median price, days on market, list-to-sale ratio, inventory levels, notable trends]. Your perspective: [what this means for buyers and sellers]<br><strong>Command:</strong> Write a friendly, informative market update email that makes the data easy to understand and includes a clear takeaway for both buyers and sellers.<br><strong>Format:</strong> Under 300 words. Conversational tone. Subject line included. End with soft call to action.</div>`,
+ ad:`<p>The CMA is only as good as its narrative. AI turns your data into a story that justifies your pricing recommendation.</p><h3>CMA Narrative Prompt</h3><div class="highlight"><strong>Role:</strong> You are an experienced listing agent presenting a CMA to a potential seller client.<br><strong>Context:</strong> Subject property: [address, beds, baths, sqft, condition, unique features]. Comps: [list 3-5 comparable sales — address, price, date, key differences]. Market conditions: [absorption rate, average DOM, list-to-sale ratio]<br><strong>Command:</strong> Write a CMA narrative walking the seller through your pricing logic, explaining how you selected comps, and building confidence in your recommended price range.<br><strong>Format:</strong> Professional but accessible. 400-500 words. End with your recommended price range and rationale.</div>`,
+ ae:`<p>Investor clients need numbers, not feelings. AI helps you structure investment analyses that answer the questions investors actually ask.</p><h3>Investment Analysis Prompt</h3><div class="highlight"><strong>Role:</strong> You are a real estate agent with investment property expertise presenting an analysis to an investor client.<br><strong>Context:</strong> Property: [address, price, type, condition]. Income: [current or projected rents]. Expenses: [taxes, insurance, HOA, maintenance, vacancy rate]. Financing: [down payment, rate, term]<br><strong>Command:</strong> Calculate and present: gross rent multiplier, cap rate, cash-on-cash return, monthly cash flow, break-even occupancy. Then write a plain-English summary of whether this makes sense at this price.<br><strong>Format:</strong> Metrics table first. Narrative summary second. Flag any assumptions you made.</div>`,
+ af:`<p>Care planning documentation is required by California Title 22 and directly impacts DSS inspection outcomes.</p><h3>Care Plan Prompt</h3><div class="highlight"><strong>Role:</strong> You are a California RCFE administrator with expertise in Title 22 compliance.<br><strong>Context:</strong> Resident: [age, gender, admission reason, diagnoses, functional/cognitive status, special needs]<br><strong>Command:</strong> Draft an individualized care plan covering: ADL assistance, medication management, nutrition and hydration, social and recreational engagement, safety and fall prevention, and any diagnosis-specific needs. Note which elements require physician authorization under Title 22.<br><strong>Format:</strong> Organized by care area. Goal-oriented language. Flag items requiring physician sign-off or 30-day review.</div><div class="tip"><strong>Title 22 reminder:</strong> Initial care plans due within 7 days of admission. Updated plans required within 30 days of any significant change in condition. AI drafts must be reviewed by a qualified administrator before placement in the resident file.</div>`,
+ ag:`<p>Incident reports must be accurate, objective, and completed within required timeframes.</p><h3>Incident Report Prompt</h3><div class="highlight"><strong>Role:</strong> You are an RCFE administrator completing a Title 22-compliant incident report.<br><strong>Context:</strong> Incident type: [fall, elopement, medication error, injury, altercation]. Date/time: []. Location: []. What happened: [describe what staff observed]. Immediate response: []. Current status: []<br><strong>Command:</strong> Draft an incident report that is factual, objective, and complete. Include: description, immediate response, notifications made, resident status, and follow-up actions planned. Avoid subjective language.<br><strong>Format:</strong> Formal report format. Chronological. Past tense. Only documented facts — no opinions.</div><h3>Reportable incidents under Title 22</h3><ul><li>Any injury requiring medical treatment beyond first aid</li><li>Elopement (resident leaves without authorization)</li><li>Medication errors resulting in adverse effects</li><li>Unexpected death</li><li>Allegations of abuse or neglect</li></ul>`,
+ ah:`<p>DSS inspections can be announced or unannounced. AI helps maintain documentation that is always inspection-ready.</p><h3>Pre-Inspection Audit Prompt</h3><div class="highlight"><strong>Role:</strong> You are a Title 22 compliance consultant preparing an RCFE for a DSS inspection.<br><strong>Context:</strong> Facility type: [RCFE or CBRC]. Number of residents: []. Last inspection date: []. Any prior deficiencies: [list if applicable]<br><strong>Command:</strong> Generate a pre-inspection documentation checklist covering: resident files (LIC 602, ISP, care plans, physician reports), staff files (criminal clearance, health screening, training hours, CPR), facility records (fire safety, incidental medical services, medication logs, grievance log, admission agreements).<br><strong>Format:</strong> Organized by category. Checkbox format. Note required update frequency for each item.</div><h3>High-frequency deficiency areas</h3><ul><li>Incomplete or outdated ISPs</li><li>Missing or expired staff criminal clearances</li><li>Medication log gaps or errors</li><li>Fire drill documentation gaps</li></ul>`,
+ ai:`<p>Title 22 requires specific training hours and competency documentation for all care staff.</p><h3>Training Plan Prompt</h3><div class="highlight"><strong>Role:</strong> You are an RCFE administrator building a compliant staff training program.<br><strong>Context:</strong> Staff role: [care staff, administrator, activity staff]. New hire or existing: []. Facility type: [RCFE/CBRC]. Any residents with special training needs: []<br><strong>Command:</strong> Create a training documentation plan covering Title 22 required topics, training hours, competency verification method, and record retention requirements for this role.<br><strong>Format:</strong> Table — Topic | Required Hours | Completion Method | Documentation Required | Frequency.</div><div class="tip"><strong>Record retention:</strong> Staff training records must be retained for a minimum period after employment ends. Keep digital backups of all certifications and competency records.</div>`,
+ aj:`<p>Property managers send dozens of notices every month. AI handles the drafting — you handle the decisions and legal review.</p><h3>Tenant Notice Prompt</h3><div class="highlight"><strong>Role:</strong> You are a California property manager with knowledge of landlord-tenant law.<br><strong>Context:</strong> Situation: [late rent / lease violation / maintenance entry / lease renewal / rent increase / notice to vacate]. Property type: []. Tenant status: [month-to-month / fixed term]. History: []<br><strong>Command:</strong> Draft a professional notice that clearly states the issue, required action, deadline, and consequence of non-compliance. Tone: firm and professional.<br><strong>Format:</strong> Formal notice format. Date, property address, tenant name, body, landlord signature block. Flag any statutory notice periods that apply.</div><div class="tip"><strong>Legal review:</strong> Have your attorney review any notice that may initiate eviction proceedings.</div>`,
+ ak:`<p>Maintenance communication is where most tenant complaints originate. Prompt, professional, documented communication prevents disputes and protects you legally.</p><h3>Maintenance Response Prompt</h3><div class="highlight"><strong>Role:</strong> You are a professional property manager responding to a maintenance request.<br><strong>Context:</strong> Request: [describe the issue]. Urgency: [emergency / urgent / routine]. Response timeline: [when you expect to address it]. Any complications: [parts ordered, vendor scheduled, access needed]<br><strong>Command:</strong> Draft a professional response acknowledging their request, confirming the timeline, explaining any delays, and telling them what to expect next.<br><strong>Format:</strong> Professional email. Warm but efficient. Under 150 words.</div><h3>Documentation discipline</h3><p>Every maintenance communication should be in writing. Use AI to draft responses even to phone calls — "Per our conversation today, here is a written summary of the maintenance request and our planned response."</p>`,
+ al:`<p>Plain-English lease summaries reduce disputes by ensuring tenants actually understand what they signed.</p><h3>Lease Summary Prompt</h3><div class="highlight"><strong>Role:</strong> You are a property manager creating a plain-English lease summary for a new tenant.<br><strong>Context:</strong> Key terms: [rent amount, due date, late fee, lease term, security deposit, pet policy, maintenance responsibilities, parking, utilities, entry notice requirements, renewal terms, early termination clause]<br><strong>Command:</strong> Write a plain-English summary of this lease that highlights what the tenant needs to know, do, and avoid. Do not reproduce the legal language — explain what it means in practice.<br><strong>Format:</strong> Under 400 words. Use headers for major topics. Bullet points for lists. End with questions to ask before signing.</div>`,
+ am:`<p>Portfolio reporting is essential for owner clients and your own business decisions. AI turns raw rent roll data into actionable narrative analysis.</p><h3>Rent Roll Analysis Prompt</h3><div class="highlight"><strong>Role:</strong> You are a property manager presenting a portfolio analysis to a property owner.<br><strong>Context:</strong> Portfolio: [number of units, property types]. Occupancy: [current rate]. Rent data: [average rent, market rent]. Vacancy: [current, time on market]. Maintenance costs: [recent period]. Issues: [late pays, pending evictions, upcoming expirations]<br><strong>Command:</strong> Write a portfolio summary telling the owner how their portfolio is performing, what the key risks are, and what actions you recommend.<br><strong>Format:</strong> Executive summary first. Then key metrics. Then recommendations. Plain English — owners are not always sophisticated investors.</div>`
+};
+
+
+L.aiL1=`<p>The AI landscape moves fast and the terminology is confusing. This lesson cuts through the noise and gives you a practical map of what exists, what it does, and what actually matters for your work.</p><h3>The three categories you need to know</h3><ul><li><strong>Language models (LLMs):</strong> Generate and analyze text. Claude, ChatGPT, Gemini, Llama. These are what you use for writing, summarizing, analyzing documents, drafting communications, and answering questions.</li><li><strong>Image models:</strong> Generate and edit images. Midjourney, DALL-E, Stable Diffusion. Useful for marketing, design, and visual content.</li><li><strong>Specialized models:</strong> Built for specific tasks — transcription, code generation, voice synthesis. Each category has a leader and a dozen competitors.</li></ul><h3>The model vs. the product distinction</h3><div class="highlight">Claude is a model. Claude.ai is a product built on that model. ChatGPT is a product built on GPT-4. The same underlying model can be accessed through many different products — each with different interfaces, pricing, and capabilities.</div><h3>What actually differentiates models</h3><ul><li><strong>Context window:</strong> How much text the model can process at once. Larger = better for long documents.</li><li><strong>Training cutoff:</strong> The date after which the model has no knowledge. Always check this for time-sensitive work.</li><li><strong>Reasoning capability:</strong> Some models are better at multi-step logical problems.</li><li><strong>Speed and cost:</strong> Faster, cheaper models exist for simple tasks. Save the powerful ones for complex work.</li></ul><div class="tip"><strong>Practical rule:</strong> Start with one model and learn it deeply before switching. The skills transfer. Jumping between models constantly slows your learning.</div>`;
+L.aiL2=`<p>The gap between AI hype and AI reality is wide. This lesson covers what professionals are actually doing with AI today.</p><h3>What is working right now</h3><ul><li><strong>First-draft generation:</strong> Any professional who writes regularly is using AI to generate first drafts and editing them. This is the single most widespread use case.</li><li><strong>Document analysis:</strong> Reading, summarizing, and extracting key points from long documents. Contracts, reports, filings, research papers.</li><li><strong>Research acceleration:</strong> Rapidly building background knowledge on unfamiliar topics before going deeper with primary sources.</li><li><strong>Communication drafting:</strong> Emails, client updates, proposals, presentations. AI drafts, humans refine.</li><li><strong>Code assistance:</strong> Even non-developers are using AI to write scripts, automate spreadsheets, and build simple tools.</li></ul><h3>What is not working yet</h3><ul><li>Fully autonomous agents handling complex multi-step professional tasks without supervision</li><li>Reliable real-time information without web search tools</li><li>Consistent accuracy on highly specialized technical domains</li></ul><div class="highlight"><strong>The honest picture:</strong> AI is a force multiplier for professionals who already know their field. It makes skilled people dramatically more productive. It does not replace expertise — it amplifies it.</div><div class="tip"><strong>The adoption curve:</strong> Early adopters who build AI fluency now will have a significant advantage in 18-24 months when AI use becomes table stakes in most professions.</div>`;
+L.aiL3=`<p>Using AI yourself is one skill. Getting your team or organization to adopt it effectively is a different challenge entirely.</p><h3>The three stages of organizational AI adoption</h3><ul><li><strong>Stage 1 — Individual experimentation:</strong> One or two people using AI on their own work. No policy, no standard, no sharing. Most organizations are here.</li><li><strong>Stage 2 — Team standardization:</strong> Shared prompt libraries, agreed-upon tools, basic policies on what AI can and cannot be used for. This is where productivity gains multiply.</li><li><strong>Stage 3 — Workflow integration:</strong> AI embedded into standard processes. Templates include AI steps. New employees are onboarded on AI tools alongside other software.</li></ul><h3>How to build a prompt library for your team</h3><div class="highlight"><strong>Step 1:</strong> Identify the 10 most common writing or analysis tasks in your team.<br><strong>Step 2:</strong> Build an RCCF prompt for each one.<br><strong>Step 3:</strong> Test with 2-3 team members. Refine.<br><strong>Step 4:</strong> Put them in a shared document. Name them clearly.<br><strong>Step 5:</strong> Add new prompts as they emerge. Remove ones that stop working.</div><div class="tip"><strong>Start small:</strong> Pick one team, one workflow, one month. Measure the time saved. Use that data to make the case for broader adoption.</div>`;
+L.aiL4=`<p>Getting budget and buy-in for AI tools requires speaking the language of leadership: time, money, and risk reduction.</p><h3>The ROI calculation framework</h3><div class="highlight"><strong>Time saved per task:</strong> [Minutes before AI] - [Minutes with AI] = Time saved per instance<br><strong>Frequency:</strong> Time saved × instances per week = Weekly hours recovered<br><strong>Dollar value:</strong> Weekly hours × hourly cost of staff = Weekly dollar value<br><strong>Annual value:</strong> Weekly dollar value × 50 = Annual ROI estimate<br><strong>Net ROI:</strong> Annual value - Annual tool cost</div><p>Example: A paralegal spends 2 hours per week on contract summaries. AI reduces this to 30 minutes. 1.5 hours saved × $45/hr × 50 weeks = $3,375/year saved. Pro subscription at $240/year. Net ROI: $3,135 in year one from one use case.</p><h3>The pitch structure</h3><ul><li><strong>Lead with the problem:</strong> "Our team spends X hours per week on [task]. That is [dollar amount] of time annually."</li><li><strong>Show the solution:</strong> Live demo if possible. Before/after output comparison if not.</li><li><strong>State the cost:</strong> Be specific. Include implementation time.</li><li><strong>Address the risk:</strong> Data security, quality control, policy. Have answers ready.</li><li><strong>Propose a pilot:</strong> One team, 30 days, specific metrics. Lower risk = easier yes.</li></ul><div class="tip"><strong>The demo is everything:</strong> Leadership approves things they can see. Show a real before/after example from your own work before making any financial argument.</div>`;
+L.aiL5=`<p>Using AI responsibly starts with understanding what it gets wrong and why. These are not edge cases — they are structural features of how these systems work.</p><h3>Where bias comes from</h3><p>AI models learn from human-generated data. Human data contains human biases — about gender, race, profession, geography, and more. Models reflect these patterns. This means bias is present and worth checking, especially in high-stakes decisions.</p><h3>Practical bias checks</h3><ul><li>When AI produces a recommendation about a person, ask: would this output look different if the person's demographic details changed?</li><li>For hiring, lending, healthcare, or legal decisions: do not use AI as the sole or primary decision-maker.</li><li>When writing about groups of people, review AI output for assumptions or stereotypes.</li></ul><h3>The hallucination problem</h3><div class="highlight"><strong>AI confidently generates false information.</strong> Fake citations, wrong dates, invented names, fabricated statistics. The confidence of the output gives no signal about its accuracy.<br><br><strong>The rule:</strong> Any specific factual claim — a number, a name, a date, a citation — must be independently verified before professional use.</div><div class="tip"><strong>Build verification into the workflow:</strong> The best AI users are not the ones who trust AI most — they are the ones who verify most efficiently.</div>`;
+L.aiL6=`<p>Every time you type into an AI tool, you are sending data to a third-party server. Understanding what that means is a professional responsibility.</p><h3>What should never go into a public AI tool</h3><ul><li>Personally identifiable information (PII) of clients, patients, or customers</li><li>Protected health information (PHI) — this is a HIPAA violation</li><li>Attorney-client privileged communications</li><li>Non-public financial information</li><li>Trade secrets or confidential business information</li><li>Social Security numbers, account numbers, or financial identifiers</li></ul><div class="highlight"><strong>The safe substitution method:</strong> Replace sensitive details with placeholders before inputting. "Client A" instead of a name. "Company X" instead of a real entity. "[AMOUNT]" instead of a dollar figure. Get the AI output, then substitute real details back in manually.</div><h3>Building a responsible AI policy</h3><p>A practical one-page AI policy covers: approved tools list, prohibited data types, disclosure requirements, quality review standards, and a point of contact for questions. It does not need to be long — it needs to be clear and actually followed.</p><div class="tip"><strong>The standard to apply:</strong> Would you be comfortable if your client, patient, or regulator saw exactly what you typed into that AI tool? If not, do not type it.</div>`;
+
+const TRACKS={
+ foundations:{label:'Universal Foundations',title:'Universal Foundations',desc:'The shared baseline every professional needs. How LLMs work, the RCCF prompting framework, tool selection, and verification patterns.',modules:2,lessons:4,
+  modules_data:[
+   {name:'How LLMs Actually Work',lessons:[{title:'What is a Large Language Model?',free:true,content:L.f},{title:'Why AI Gets Things Wrong — and How to Catch It',free:false,content:L.g}]},
+   {name:'Prompting That Actually Works',lessons:[{title:'The RCCF Framework',free:true,content:L.h},{title:'Advanced Prompting — Iteration, Chaining, and Personas',free:false,content:L.i}]}
+  ]},
+ legal:{label:'Legal Track',title:'Legal',desc:'AI workflows for legal professionals. Contract review, case summaries, client communications, and document analysis.',modules:3,lessons:6,
+  modules_data:[
+   {name:'Contract Review',lessons:[{title:'AI-Assisted Contract Review',free:true,content:L.j},{title:'Red Flag Identification and Risk Rating',free:false,content:L.k}]},
+   {name:'Client Communications',lessons:[{title:'Plain-Language Client Summaries',free:false,content:L.l},{title:'Demand Letters and Formal Correspondence',free:false,content:L.m}]},
+   {name:'Case Workflows',lessons:[{title:'Case Summary Generation',free:false,content:L.n},{title:'Deposition Preparation with AI',free:false,content:L.o}]}
+  ]},
+ finance:{label:'Finance Track',title:'Finance',desc:'AI workflows for financial professionals. Statements, memos, analysis, and client reporting.',modules:3,lessons:6,
+  modules_data:[
+   {name:'Financial Analysis',lessons:[{title:'AI-Assisted Financial Statement Review',free:true,content:L.p},{title:'Variance Analysis Automation',free:false,content:L.q}]},
+   {name:'Client Memos and Reporting',lessons:[{title:'Investment Memo Drafting',free:false,content:L.r},{title:'Portfolio Review and Client Reporting',free:false,content:L.s}]},
+   {name:'Compliance and Risk',lessons:[{title:'Regulatory Filing Summaries',free:false,content:L.t},{title:'Risk Assessment Documentation',free:false,content:L.u}]}
+  ]},
+ healthcare:{label:'Healthcare Track',title:'Healthcare',desc:'AI workflows for healthcare professionals. Documentation, care coordination, and patient communications.',modules:2,lessons:4,
+  modules_data:[
+   {name:'Clinical Documentation',lessons:[{title:'AI-Assisted Note Writing',free:true,content:L.v},{title:'Discharge Summary Generation',free:false,content:L.w}]},
+   {name:'Care Coordination',lessons:[{title:'Care Plan Documentation',free:false,content:L.x},{title:'Referral Letters and Care Transitions',free:false,content:L.y}]}
+  ]},
+ realestate:{label:'Real Estate Track',title:'Real Estate',desc:'AI workflows for real estate professionals. Listings, comps, client communications, and market analysis.',modules:3,lessons:6,
+  modules_data:[
+   {name:'Listing Copy',lessons:[{title:'AI-Powered Listing Descriptions',free:true,content:L.z},{title:'Neighborhood and Community Descriptions',free:false,content:L.aa}]},
+   {name:'Client Communications',lessons:[{title:'Offer Summary and Strategy Letters',free:false,content:L.ab},{title:'Market Update Emails and Newsletters',free:false,content:L.ac}]},
+   {name:'Analysis and Strategy',lessons:[{title:'CMA Narrative Writing',free:false,content:L.ad},{title:'Investment Property Analysis',free:false,content:L.ae}]}
+  ]},
+ care:{label:'Care & RCFE Track',title:'Care & RCFE',desc:'AI workflows for RCFE administrators and care staff. Resident documentation, compliance, and care planning under California Title 22.',modules:2,lessons:4,
+  modules_data:[
+   {name:'Resident Documentation',lessons:[{title:'AI-Assisted Care Plans',free:true,content:L.af},{title:'Incident Report Writing',free:false,content:L.ag}]},
+   {name:'Compliance and Operations',lessons:[{title:'Inspection Readiness — Title 22 Checklist Documentation',free:false,content:L.ah},{title:'Staff Training Documentation and Competency Records',free:false,content:L.ai}]}
+  ]},
+ aitrack:{label:'AI & Technology Track',title:'AI & Technology',desc:'Understand the AI landscape, build business strategy around AI tools, and navigate ethics and responsible use — for any profession.',modules:3,lessons:6,
+  modules_data:[
+   {name:'AI Fundamentals',lessons:[
+    {title:'The AI Landscape — Models, Tools, and What They Actually Do',free:true,content:L.aiL1},
+    {title:'How AI Is Actually Being Used — Real Workflows Across Industries',free:false,content:L.aiL2}
+   ]},
+   {name:'AI for Business',lessons:[
+    {title:'Building an AI Strategy — From Individual Use to Team Adoption',free:false,content:L.aiL3},
+    {title:'Calculating ROI and Pitching AI to Leadership',free:false,content:L.aiL4}
+   ]},
+   {name:'AI Ethics & Responsible Use',lessons:[
+    {title:'Bias, Accuracy, and the Limits of AI',free:false,content:L.aiL5},
+    {title:'Privacy, Data Security, and Responsible AI Policies',free:false,content:L.aiL6}
+   ]}
+  ]},
+ property:{label:'Property Management Track',title:'Property Management',desc:'AI workflows for property managers. Tenant communications, lease summaries, and maintenance coordination.',modules:2,lessons:4,
+  modules_data:[
+   {name:'Tenant Communications',lessons:[{title:'AI-Drafted Tenant Notices',free:true,content:L.aj},{title:'Maintenance Request Processing and Follow-Up',free:false,content:L.ak}]},
+   {name:'Leases and Financial Analysis',lessons:[{title:'Lease Summary for Tenants',free:false,content:L.al},{title:'Rent Roll Analysis and Portfolio Reporting',free:false,content:L.am}]}
+  ]}
+};
+
+const LEGAL_PAGES={
+ terms:{title:'Terms of Service',date:'Effective June 17, 2026',content:`<h2>1. Acceptance of Terms</h2><p>By accessing or using SkillUp Academy at skillupapp.app, you agree to these Terms. If you do not agree, do not use the Service.</p><h2>2. Description of Service</h2><p>SkillUp Academy is an online educational platform providing AI professional development courses, lessons, and completion certificates, operated by RunP8.</p><h2>3. User Accounts</h2><p>You must create an account to access course content. You are responsible for maintaining confidentiality of your credentials and all activity under your account.</p><h2>4. Subscriptions and Payment</h2><p>Pro subscriptions are billed monthly. You may cancel at any time. Cancellation takes effect at the end of the current billing period. Pricing may change with 30 days notice.</p><h2>5. Intellectual Property</h2><p>All course content, materials, prompts, frameworks, and certificates are owned by RunP8 and protected by copyright. You may use materials for personal professional development. You may not reproduce, distribute, sell, or create derivative works without written permission.</p><h2>6. Acceptable Use</h2><p>You agree not to share your account credentials, attempt to circumvent payment requirements, scrape or copy course content, or use the platform for any unlawful purpose.</p><h2>7. Disclaimers</h2><p>Course content is for educational purposes only. Nothing constitutes legal, medical, financial, or professional advice. See our separate Disclaimer for full details.</p><h2>8. Limitation of Liability</h2><p>RunP8 shall not be liable for any indirect, incidental, or consequential damages. Our total liability shall not exceed the amount you paid us in the 12 months preceding the claim.</p><h2>9. Termination</h2><p>We may terminate or suspend your account for violation of these Terms. You may delete your account at any time.</p><h2>10. Governing Law</h2><p>These Terms are governed by the laws of the State of California.</p><h2>11. Contact</h2><p>support@skillupapp.app</p>`},
+ privacy:{title:'Privacy Policy',date:'Effective June 17, 2026',content:`<h2>1. Information We Collect</h2><p>We collect your name and email address via Google OAuth, information about your course progress and lesson completions, payment information processed by Stripe (we do not store card details), and usage data.</p><h2>2. How We Use Your Information</h2><p>We use your information to provide and improve the Service, track course progress, issue completion certificates, process payments, and send service communications.</p><h2>3. Information Sharing</h2><p>We do not sell your personal information. We share information only with service providers who help us operate the platform (Supabase, Stripe, Cloudflare), as required by law, or with your consent.</p><h2>4. Data Retention</h2><p>We retain your information for as long as your account is active. You may request deletion by contacting us.</p><h2>5. Security</h2><p>We implement reasonable security measures to protect your information. No internet transmission is completely secure.</p><h2>6. Google OAuth</h2><p>We use Google OAuth for authentication. We receive your name and email address from Google. We do not receive your Google password.</p><h2>7. Cookies</h2><p>We use session cookies necessary for authentication. We do not use advertising cookies or sell data to advertisers.</p><h2>8. Your Rights</h2><p>You have the right to access, correct, or delete your personal information. California residents have additional rights under CCPA. Contact support@skillupapp.app.</p><h2>9. Children's Privacy</h2><p>The Service is not directed to children under 13. We do not knowingly collect information from children under 13.</p><h2>10. Contact</h2><p>support@skillupapp.app</p>`},
+ disclaimer:{title:'Educational Disclaimer',date:'Effective June 17, 2026',content:`<h2>Educational Purpose Only</h2><p>SkillUp Academy provides educational content about using AI tools in professional settings. All content is for educational and informational purposes only.</p><h2>Not Professional Advice</h2><p>Nothing in our courses constitutes legal advice, medical advice, financial advice, investment advice, or any other form of professional advice. Prompt templates and frameworks are educational examples — not professional guidance specific to your situation.</p><h2>Professional Judgment Required</h2><p>AI tools are productivity aids. They do not replace professional judgment, licensure, or expertise. Any AI-generated output used in professional contexts must be reviewed, verified, and approved by a qualified professional before use.</p><h2>Specific Disclaimers by Track</h2><ul><li><strong>Legal Track:</strong> Nothing constitutes legal advice. All AI-generated legal content must be reviewed by a licensed attorney.</li><li><strong>Finance Track:</strong> Nothing constitutes investment, financial, or tax advice. All AI-generated financial analysis must be reviewed by a qualified professional.</li><li><strong>Healthcare Track:</strong> Nothing constitutes medical advice. All AI-generated clinical documentation must be reviewed by a licensed healthcare provider before use in patient care. HIPAA compliance is the responsibility of the user.</li><li><strong>Care & RCFE Track:</strong> Nothing constitutes regulatory compliance advice. Title 22 requirements change and vary by facility type. All AI-generated documentation must be reviewed by a qualified RCFE administrator. Compliance with California DSS regulations is the responsibility of the licensee.</li><li><strong>Real Estate Track:</strong> Nothing constitutes real estate, legal, or financial advice. All AI-generated content must be reviewed before use with clients.</li><li><strong>Property Management Track:</strong> Nothing constitutes legal advice. Landlord-tenant law varies by jurisdiction. All AI-generated notices should be reviewed by a qualified attorney before serving on tenants.</li></ul><h2>AI Accuracy</h2><p>AI systems can produce inaccurate, outdated, or fabricated information. Users are responsible for verifying all AI-generated output before professional use.</p><h2>Contact</h2><p>support@skillupapp.app</p>`},
+ refund:{title:'Refund Policy',date:'Effective June 17, 2026',content:`<h2>Pro Subscription Refunds</h2><p>We offer a 7-day refund for new Pro subscriptions. If you subscribe and are not satisfied, contact us within 7 days of your initial payment for a full refund. After 7 days, subscriptions are non-refundable for the current billing period.</p><h2>Cancellation</h2><p>You may cancel your Pro subscription at any time. Cancellation stops future billing. You retain access through the end of your current billing period. We do not provide partial refunds for unused time.</p><h2>How to Request a Refund</h2><p>Email support@skillupapp.app with your account email and reason for your request. Refunds are processed within 5-10 business days to your original payment method.</p><h2>Free Tier</h2><p>The free tier requires no payment and is not subject to this refund policy.</p><h2>Exceptions</h2><p>We reserve the right to deny refund requests where course content has been substantially accessed or where the refund policy appears to be abused.</p><h2>Contact</h2><p>support@skillupapp.app</p>`},
+ certificate:{title:'Certificate Policy',date:'Effective June 17, 2026',content:`<h2>What Our Certificates Represent</h2><p>SkillUp Academy completion certificates are records of educational achievement confirming that the named individual has completed all required lessons in a SkillUp Academy professional development track.</p><h2>What Our Certificates Are Not</h2><p>SkillUp Academy certificates are not: state-issued professional licenses or certifications, accreditation from a state or federal educational body, CEU (Continuing Education Unit) credit recognized by professional licensing boards, evidence of professional competency or qualification, or endorsement by any government agency, professional association, or regulatory body.</p><h2>Issuing Authority</h2><p>Certificates are issued by SkillUp Academy, a product of RunP8. SkillUp Academy is a private educational platform not affiliated with, approved by, or accredited by any state or federal education authority.</p><h2>Eligibility</h2><p>Certificates are issued to Pro subscribers who complete all lessons in a track. Free-tier users are not eligible for certificates.</p><h2>Certificate Authenticity</h2><p>Each certificate includes a unique Certificate ID. SkillUp Academy may verify certificate authenticity upon request. Contact support@skillupapp.app.</p><h2>Appropriate Use</h2><p>Recipients may share certificates as evidence of professional development. Recipients should not represent SkillUp Academy certificates as professional licensure, state certification, or accreditation. Recipients should accurately represent the nature of the certificate — completion of a private AI professional development course.</p><h2>Revocation</h2><p>We reserve the right to revoke certificates issued based on fraudulent activity, account sharing, or violation of our Terms of Service.</p><h2>Future Accreditation</h2><p>SkillUp Academy is exploring pathways to recognized accreditation and CEU credit for select tracks. We will notify users of any updates.</p><h2>Contact</h2><p>support@skillupapp.app</p>`}
+};
+
+function showScreen(id){
+ ['landing-screen','auth-screen','app-screen','track-screen','lesson-screen','cert-screen','legal-screen'].forEach(s=>{const el=document.getElementById(s);if(el)el.classList.add('hidden');});
+ const t=document.getElementById(id);if(t){t.classList.remove('hidden');window.scrollTo(0,0);}
+}
+function goAuth(mode){document.getElementById('auth-title').textContent=mode==='signup'?'Create your free account':'Welcome back';showScreen('auth-screen');}
+function showLegal(page){
+ const d=LEGAL_PAGES[page];if(!d)return;
+ document.getElementById('legal-content').innerHTML=`<div class="legal-title">${d.title}</div><div class="legal-date">${d.date}</div>${d.content}`;
+ document.querySelectorAll('.legal-nav-btn').forEach(b=>b.classList.remove('on'));
+ const btn=document.getElementById('ln-'+page);if(btn)btn.classList.add('on');
+ showScreen('legal-screen');
+}
+async function signInGoogle(){
+ const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin}});
+ if(error){const e=document.getElementById('auth-err');e.textContent=error.message;e.style.display='block';}
+}
+async function signOut(){if(!confirm('Sign out?'))return;await sb.auth.signOut();currentUser=null;showScreen('landing-screen');}
+async function loadUser(){
+ if(!currentUser)return;
+ const{data}=await sb.from('profiles').select('plan').eq('id',currentUser.id).single();
+ if(data)userPlan=data.plan||'free';
+ const name=currentUser.email?.split('@')[0]||'Account';
+ ['user-display','user-display2','user-display3'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=name;});
+}
+function openTrack(trackId){
+ const track=TRACKS[trackId];if(!track)return;
+ currentTrackId=trackId;
+ document.getElementById('track-screen-label').textContent=track.label;
+ document.getElementById('track-label').textContent=track.label;
+ document.getElementById('track-title').textContent=track.title;
+ document.getElementById('track-desc').textContent=track.desc;
+ document.getElementById('track-meta1').textContent='📚 '+track.modules+' modules';
+ document.getElementById('track-meta2').textContent='📖 '+track.lessons+' lessons';
+ const list=document.getElementById('modules-list');
+ list.innerHTML=track.modules_data.map((mod,mi)=>`
+  <div class="module-card">
+   <div class="module-header" onclick="toggleModule(${mi})">
+    <div><div class="module-num">Module ${mi+1}</div><div class="module-name">${mod.name}</div></div>
+    <div class="module-lessons-count">${mod.lessons.length} lessons</div>
+   </div>
+   <div class="lessons-list" id="mod-${mi}">
+    ${mod.lessons.map((lesson,li)=>{
+     const key=`${trackId}-${mi}-${li}`;const done=completedLessons[key];
+     return `<div class="lesson-row" onclick="openLesson('${trackId}',${mi},${li})">
+      <div class="lesson-icon ${lesson.free?'free':'locked'}">${done?'✓':lesson.free?'▶':'🔒'}</div>
+      <div class="lesson-title-text">${lesson.title}</div>
+      <div class="lesson-tag ${done?'done':lesson.free?'free':'pro'}">${done?'Done':lesson.free?'Free':'Pro'}</div>
+     </div>`;
+    }).join('')}
+   </div>
+  </div>`).join('');
+ const allKeys=track.modules_data.flatMap((mod,mi)=>mod.lessons.map((_,li)=>`${trackId}-${mi}-${li}`));
+ const allDone=allKeys.every(k=>completedLessons[k]);
+ const certContainer=document.getElementById('cert-banner-container');
+ if(allDone&&userPlan==='pro'){
+  certContainer.innerHTML=`<div class="cert-banner"><div style="font-size:28px;flex-shrink:0;">🏆</div><div style="flex:1;"><div style="font-size:14px;font-weight:700;margin-bottom:3px;">Track Complete!</div><div style="font-size:12.5px;color:var(--text2);">You have completed the ${track.title} track.</div></div><button class="cert-btn" onclick="showCertificate('${trackId}')">Get Certificate</button></div>`;
+ }else if(userPlan==='pro'){
+  const done=allKeys.filter(k=>completedLessons[k]).length;
+  certContainer.innerHTML=`<div style="font-size:13px;color:var(--text2);text-align:center;margin-top:18px;padding:14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);">🏆 Complete all ${allKeys.length} lessons to earn your certificate — ${done}/${allKeys.length} done</div>`;
+ }
+ showScreen('track-screen');
+}
+function toggleModule(mi){const el=document.getElementById('mod-'+mi);el.style.display=el.style.display==='none'?'block':'none';}
+function openLesson(trackId,mi,li){
+ const track=TRACKS[trackId];const lesson=track.modules_data[mi].lessons[li];
+ if(!lesson.free&&userPlan!=='pro'){showPaywall();return;}
+ currentLesson={trackId,mi,li};
+ document.getElementById('lesson-nav-title').textContent=lesson.title;
+ document.getElementById('lesson-label').textContent=track.label+' · Module '+(mi+1);
+ document.getElementById('lesson-title').textContent=lesson.title;
+ document.getElementById('lesson-content').innerHTML=lesson.content;
+ const key=`${trackId}-${mi}-${li}`;const done=completedLessons[key];
+ const btn=document.getElementById('complete-btn');
+ btn.textContent=done?'✓ Completed':'Mark complete ✓';
+ btn.className=done?'mark-complete-btn done':'mark-complete-btn';
+ showScreen('lesson-screen');
+}
+function markComplete(){
+ if(!currentLesson)return;
+ const{trackId,mi,li}=currentLesson;
+ const key=`${trackId}-${mi}-${li}`;
+ completedLessons[key]=true;
+ localStorage.setItem('skillup_completed',JSON.stringify(completedLessons));
+ const btn=document.getElementById('complete-btn');
+ btn.textContent='✓ Completed';btn.className='mark-complete-btn done';
+}
+function closeLesson(){if(currentTrackId){openTrack(currentTrackId);}else{showScreen('app-screen');}}
+function showCertificate(trackId){
+ const track=TRACKS[trackId];
+ const name=currentUser?.user_metadata?.full_name||currentUser?.email?.split('@')[0]||'Student';
+ const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+ const certId='SKU-'+Math.random().toString(36).substr(2,7).toUpperCase();
+ document.getElementById('cert-name').textContent=name;
+ document.getElementById('cert-track').textContent=track.title+' Track';
+ document.getElementById('cert-sub').textContent='AI Professional Development Program · SkillUp Academy';
+ document.getElementById('cert-date').textContent='Completed '+date;
+ document.getElementById('cert-id').textContent='Certificate ID: '+certId;
+ const name3=currentUser?.email?.split('@')[0]||'Account';
+ document.getElementById('user-display3').textContent=name3;
+ showScreen('cert-screen');
+}
+function showPaywall(){document.getElementById('paywall-modal').classList.add('show');}
+function closePaywall(){document.getElementById('paywall-modal').classList.remove('show');}
+function goUpgrade(){window.open(STRIPE_LINK,'_blank');closePaywall();}
+async function init(){
+ let{data:{session}}=await sb.auth.getSession();
+ if(!session){const{data:r}=await sb.auth.refreshSession();session=r?.session;}
+ if(session?.user){currentUser=session.user;await loadUser();showScreen('app-screen');}
+ else{showScreen('landing-screen');}
+ sb.auth.onAuthStateChange(async(event,session)=>{
+  if(event==='SIGNED_IN'&&session){currentUser=session.user;await loadUser();showScreen('app-screen');}
+  if(event==='SIGNED_OUT'){currentUser=null;showScreen('landing-screen');}
+  if(event==='TOKEN_REFRESHED'&&session){currentUser=session.user;}
+ });
+}
+init();
+</script>
+</body>
+</html>
