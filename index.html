@@ -458,7 +458,7 @@ function showLegal(page){
  showScreen('legal-screen');
 }
 async function signInGoogle(){
- const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin}});
+ const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo: 'https://skillupapp.app'}});
  if(error){const e=document.getElementById('auth-err');e.textContent=error.message;e.style.display='block';}
 }
 async function signOut(){if(!confirm('Sign out?'))return;await sb.auth.signOut();currentUser=null;showScreen('landing-screen');}
