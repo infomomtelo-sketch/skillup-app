@@ -170,6 +170,77 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,21,18,0.95);backdrop-fi
 .paywall-feat::before{content:'✓';color:var(--accent);font-weight:700;}
 .paywall-btn{width:100%;padding:14px;background:var(--accent);color:#0a1512;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);margin-bottom:10px;}
 .paywall-close{background:none;border:none;color:var(--text2);font-size:13px;cursor:pointer;font-family:var(--font);}
+
+#settings-screen{min-height:100vh;background:var(--bg);}
+.settings-body{max-width:640px;margin:0 auto;padding:24px 20px 80px;}
+.settings-section{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden;}
+.settings-section-title{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);padding:16px 18px 0;margin-bottom:12px;}
+.settings-row{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.settings-row:last-child{border-bottom:none;}
+.settings-row-label{font-size:14px;font-weight:600;margin-bottom:2px;}
+.settings-row-sub{font-size:12.5px;color:var(--text2);}
+.settings-row-right{display:flex;align-items:center;gap:10px;}
+.settings-input{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13.5px;color:var(--text);font-family:var(--font);width:180px;outline:none;}
+.settings-input:focus{border-color:var(--accent);}
+.settings-btn{padding:7px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font);border:none;transition:all 0.15s;}
+.settings-btn.save{background:var(--accent);color:#0a1512;}
+.settings-btn.danger{background:rgba(248,113,113,0.1);color:#f87171;border:1px solid rgba(248,113,113,0.2);}
+.settings-btn.ghost{background:var(--bg4);color:var(--text2);border:1px solid var(--border);}
+.plan-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:99px;font-size:12px;font-weight:700;}
+.plan-badge.free{background:rgba(255,255,255,0.06);color:var(--text2);}
+.plan-badge.pro{background:rgba(45,212,160,0.15);color:var(--accent);}
+.toggle-wrap{display:flex;align-items:center;gap:10px;}
+.toggle{width:42px;height:24px;background:var(--bg4);border:1px solid var(--border);border-radius:99px;position:relative;cursor:pointer;transition:background 0.2s;}
+.toggle.on{background:var(--accent);}
+.toggle-dot{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform 0.2s;}
+.toggle.on .toggle-dot{transform:translateX(18px);}
+.settings-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--accent);color:#0a1512;padding:10px 20px;border-radius:10px;font-size:13.5px;font-weight:700;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:9999;}
+.settings-toast.show{opacity:1;}
+.progress-bar-wrap{background:var(--bg4);border-radius:99px;height:6px;flex:1;margin:0 10px;}
+.progress-bar-fill{height:100%;border-radius:99px;background:var(--accent);transition:width 0.3s;}
+
+
+.ai-assistant-btn{position:fixed;bottom:24px;right:20px;z-index:900;width:52px;height:52px;border-radius:50%;background:var(--accent);border:none;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(45,212,160,0.4);display:none;align-items:center;justify-content:center;transition:transform 0.15s;}
+.ai-assistant-btn:hover{transform:scale(1.08);}
+.ai-assistant-btn.visible{display:flex;}
+#ai-chat-panel{position:fixed;bottom:88px;right:20px;width:320px;max-height:440px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;z-index:901;display:none;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.4);}
+#ai-chat-panel.open{display:flex;}
+.ai-chat-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.ai-chat-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.ai-chat-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.ai-chat-close{background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;line-height:1;}
+.ai-chat-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.ai-msg{font-size:13px;line-height:1.6;padding:10px 12px;border-radius:10px;max-width:90%;}
+.ai-msg.assistant{background:var(--bg3);color:var(--text2);align-self:flex-start;}
+.ai-msg.user{background:rgba(45,212,160,0.15);color:var(--text);align-self:flex-end;}
+.ai-chat-input-row{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;}
+.ai-chat-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--text);font-family:var(--font);outline:none;resize:none;}
+.ai-chat-input:focus{border-color:var(--accent);}
+.ai-send-btn{width:34px;height:34px;border-radius:8px;background:var(--accent);border:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+#playground-screen{min-height:100vh;background:var(--bg);}
+.pg-body{max-width:640px;margin:0 auto;padding:24px 20px 80px;}
+.pg-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;}
+.pg-label{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.pg-title{font-size:20px;font-weight:800;margin-bottom:6px;letter-spacing:-0.02em;}
+.pg-sub{font-size:13.5px;color:var(--text2);line-height:1.6;margin-bottom:20px;}
+.pg-textarea{width:100%;background:var(--bg4);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:14px;color:var(--text);font-family:var(--font);resize:vertical;min-height:120px;outline:none;line-height:1.6;}
+.pg-textarea:focus{border-color:var(--accent);}
+.pg-run-btn{width:100%;padding:13px;background:var(--accent);color:#0a1512;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:10px;transition:opacity 0.15s;}
+.pg-run-btn:hover{opacity:0.88;}
+.pg-run-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.pg-output{background:var(--bg4);border:1px solid var(--border);border-radius:10px;padding:16px;font-size:14px;color:var(--text2);line-height:1.7;white-space:pre-wrap;min-height:80px;margin-top:10px;}
+.pg-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.pg-chip{padding:6px 14px;border-radius:99px;border:1px solid var(--border);font-size:12.5px;color:var(--text2);cursor:pointer;background:transparent;font-family:var(--font);transition:all 0.15s;}
+.pg-chip:hover{border-color:var(--accent);color:var(--accent);}
+.pg-spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(10,21,18,0.3);border-top-color:#0a1512;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.rccf-builder{display:flex;flex-direction:column;gap:10px;margin-bottom:12px;}
+.rccf-row{display:flex;gap:10px;align-items:flex-start;}
+.rccf-tag{width:72px;flex-shrink:0;padding:8px 0;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+.rccf-input{flex:1;background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--text);font-family:var(--font);outline:none;}
+.rccf-input:focus{border-color:var(--accent);}
+
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
 @media print{body>*:not(#cert-screen){display:none!important;}#cert-screen{display:block!important;}.cert-print-btn,.app-header,nav{display:none!important;}}
 </style>
@@ -230,7 +301,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,21,18,0.95);backdrop-fi
 
 <!-- APP DASHBOARD -->
 <div id="app-screen" class="hidden">
-<div class="app-header"><div><div style="font-size:16px;font-weight:700;">✦ SkillUp</div><div style="font-size:12px;color:var(--text2);margin-top:2px;">Your learning dashboard</div></div><div class="user-badge" onclick="signOut()"><div class="udot"></div><span id="user-display">Account</span></div></div>
+<div class="app-header"><div><div style="font-size:16px;font-weight:700;">✦ SkillUp</div><div style="font-size:12px;color:var(--text2);margin-top:2px;">Your learning dashboard</div></div><div style="display:flex;gap:8px;align-items:center;"><button class="settings-btn ghost" style="padding:7px 12px;font-size:13px;font-weight:700;" onclick="showScreen('playground-screen')">⚡ Playground</button><button class="settings-btn ghost" style="padding:7px 12px;font-size:16px;" onclick="openSettings()" title="Settings">⚙️</button><div class="user-badge" onclick="signOut()"><div class="udot"></div><span id="user-display">Account</span></div></div></div>
 <div class="course-body">
 <div class="section-label" style="margin-bottom:6px;">Curriculum</div>
 <div style="font-size:1.5rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px;">Learn AI for your profession.</div>
@@ -238,13 +309,13 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,21,18,0.95);backdrop-fi
 <div class="found-card" style="cursor:pointer;" onclick="openTrack('foundations')"><div class="found-badge">✦ Start here · Free</div><div class="found-title">Universal Foundations</div><div class="found-desc">How LLMs work, the RCCF prompting framework, tool selection, and verification patterns.</div><button class="found-btn">Begin foundations →</button></div>
 <div class="section-label" style="margin-bottom:14px;">Profession Tracks</div>
 <div class="tracks-grid">
+<div class="track-card" onclick="openTrack('aitrack')" style="border-color:rgba(99,102,241,0.4);background:rgba(99,102,241,0.05);"><div class="track-icon" style="background:rgba(99,102,241,0.15)">🤖</div><div><div class="track-name" style="color:#a5b4fc;">AI & Technology ✦ Featured</div><div class="track-desc">AI landscape, business strategy, ethics, and responsible use.</div><div class="track-meta">3 modules · 6 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
 <div class="track-card" onclick="openTrack('legal')"><div class="track-icon" style="background:rgba(96,165,250,0.15)">⚖️</div><div><div class="track-name">Legal</div><div class="track-desc">Contracts, case workflows, document analysis.</div><div class="track-meta">3 modules · 6 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
 <div class="track-card" onclick="openTrack('finance')"><div class="track-icon" style="background:rgba(45,212,160,0.15)">💵</div><div><div class="track-name">Finance</div><div class="track-desc">Statements, memos, and analysis.</div><div class="track-meta">3 modules · 6 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
 <div class="track-card" onclick="openTrack('healthcare')"><div class="track-icon" style="background:rgba(251,146,60,0.15)">🏥</div><div><div class="track-name">Healthcare</div><div class="track-desc">Documentation and care coordination.</div><div class="track-meta">2 modules · 4 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
 <div class="track-card" onclick="openTrack('realestate')"><div class="track-icon" style="background:rgba(167,139,250,0.15)">🏠</div><div><div class="track-name">Real Estate</div><div class="track-desc">Listings, comps, client communications.</div><div class="track-meta">3 modules · 6 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
 <div class="track-card" onclick="openTrack('care')"><div class="track-icon" style="background:rgba(244,196,48,0.15)">🏡</div><div><div class="track-name">Care & RCFE</div><div class="track-desc">Resident documentation, compliance, care planning.</div><div class="track-meta">2 modules · 4 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
 <div class="track-card" onclick="openTrack('property')"><div class="track-icon" style="background:rgba(45,212,160,0.1)">🏗️</div><div><div class="track-name">Property Management</div><div class="track-desc">Tenant comms, lease summaries, maintenance logs.</div><div class="track-meta">2 modules · 4 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
-<div class="track-card" onclick="openTrack('aitrack')"><div class="track-icon" style="background:rgba(99,102,241,0.15)">🤖</div><div><div class="track-name">AI & Technology</div><div class="track-desc">AI landscape, business strategy, ethics, and responsible use.</div><div class="track-meta">3 modules · 6 lessons · Certificate</div></div><div class="track-arrow">›</div></div>
 </div>
 <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border);display:flex;gap:12px;flex-wrap:wrap;">
 <span onclick="showLegal('terms')" style="font-size:12px;color:var(--text2);opacity:0.6;cursor:pointer;">Terms</span><span onclick="showLegal('privacy')" style="font-size:12px;color:var(--text2);opacity:0.6;cursor:pointer;">Privacy</span><span onclick="showLegal('disclaimer')" style="font-size:12px;color:var(--text2);opacity:0.6;cursor:pointer;">Disclaimer</span><span onclick="showLegal('refund')" style="font-size:12px;color:var(--text2);opacity:0.6;cursor:pointer;">Refund</span><span onclick="showLegal('certificate')" style="font-size:12px;color:var(--text2);opacity:0.6;cursor:pointer;">Certificate Policy</span>
@@ -309,6 +380,96 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,21,18,0.95);backdrop-fi
 </div>
 <div id="legal-content"></div>
 </div></div>
+
+
+<!-- SETTINGS -->
+<div id="settings-screen" class="hidden">
+<div class="app-header">
+  <div><div style="font-size:16px;font-weight:700;">✦ SkillUp</div><div style="font-size:12px;color:var(--text2);margin-top:2px;">Settings</div></div>
+  <div class="user-badge" onclick="showScreen('app-screen')">← Dashboard</div>
+</div>
+<div class="settings-body">
+  <div style="font-size:22px;font-weight:800;letter-spacing:-0.02em;margin-bottom:20px;">Settings</div>
+
+  <!-- ACCOUNT -->
+  <div class="settings-section">
+    <div class="settings-section-title">Account</div>
+    <div class="settings-row">
+      <div><div class="settings-row-label">Display Name</div><div class="settings-row-sub" id="s-name-display">—</div></div>
+      <div class="settings-row-right">
+        <input class="settings-input hidden" id="s-name-input" placeholder="Your name" maxlength="40">
+        <button class="settings-btn save hidden" id="s-name-save" onclick="saveName()">Save</button>
+        <button class="settings-btn ghost" id="s-name-edit" onclick="editName()">Edit</button>
+      </div>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-row-label">Email</div><div class="settings-row-sub" id="s-email-display">—</div></div>
+      <div class="settings-row-right"><span style="font-size:12px;color:var(--text2);opacity:0.6;">Via Google</span></div>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-row-label">Sign Out</div><div class="settings-row-sub">Sign out of your account</div></div>
+      <div class="settings-row-right"><button class="settings-btn ghost" onclick="signOut()">Sign out</button></div>
+    </div>
+  </div>
+
+  <!-- SUBSCRIPTION -->
+  <div class="settings-section">
+    <div class="settings-section-title">Subscription</div>
+    <div class="settings-row">
+      <div><div class="settings-row-label">Current Plan</div><div class="settings-row-sub" id="s-plan-sub">—</div></div>
+      <div class="settings-row-right"><span class="plan-badge" id="s-plan-badge">—</span></div>
+    </div>
+    <div class="settings-row" id="s-upgrade-row">
+      <div><div class="settings-row-label">Upgrade to Pro</div><div class="settings-row-sub">Unlock all tracks and certificates</div></div>
+      <div class="settings-row-right"><button class="settings-btn save" onclick="goUpgrade()">Upgrade — $19/mo</button></div>
+    </div>
+    <div class="settings-row hidden" id="s-manage-row">
+      <div><div class="settings-row-label">Manage Subscription</div><div class="settings-row-sub">Cancel or update billing</div></div>
+      <div class="settings-row-right"><button class="settings-btn ghost" onclick="window.open(STRIPE_LINK,'_blank')">Manage</button></div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="settings-section">
+    <div class="settings-section-title">Learning Progress</div>
+    <div id="s-progress-rows"></div>
+    <div class="settings-row">
+      <div><div class="settings-row-label">Reset All Progress</div><div class="settings-row-sub">Clear all completed lessons</div></div>
+      <div class="settings-row-right"><button class="settings-btn danger" onclick="resetProgress()">Reset</button></div>
+    </div>
+  </div>
+
+  <!-- NOTIFICATIONS -->
+  <div class="settings-section">
+    <div class="settings-section-title">Notifications</div>
+    <div class="settings-row">
+      <div><div class="settings-row-label">Weekly Progress Reminder</div><div class="settings-row-sub">Get a nudge to keep learning</div></div>
+      <div class="settings-row-right"><div class="toggle-wrap"><div class="toggle on" id="notif-weekly" onclick="toggleNotif('notif-weekly')"><div class="toggle-dot"></div></div></div></div>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-row-label">New Track Announcements</div><div class="settings-row-sub">Be first to know about new tracks</div></div>
+      <div class="settings-row-right"><div class="toggle-wrap"><div class="toggle on" id="notif-tracks" onclick="toggleNotif('notif-tracks')"><div class="toggle-dot"></div></div></div></div>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-row-label">Certificate Reminders</div><div class="settings-row-sub">Remind me when I'm close to completing a track</div></div>
+      <div class="settings-row-right"><div class="toggle-wrap"><div class="toggle" id="notif-certs" onclick="toggleNotif('notif-certs')"><div class="toggle-dot"></div></div></div></div>
+    </div>
+  </div>
+
+  <!-- LEGAL -->
+  <div class="settings-section">
+    <div class="settings-section-title">Legal</div>
+    <div class="settings-row" style="cursor:pointer;" onclick="showLegal('terms')"><div><div class="settings-row-label">Terms of Service</div></div><div style="color:var(--text2);font-size:16px;">›</div></div>
+    <div class="settings-row" style="cursor:pointer;" onclick="showLegal('privacy')"><div><div class="settings-row-label">Privacy Policy</div></div><div style="color:var(--text2);font-size:16px;">›</div></div>
+    <div class="settings-row" style="cursor:pointer;" onclick="showLegal('disclaimer')"><div><div class="settings-row-label">Educational Disclaimer</div></div><div style="color:var(--text2);font-size:16px;">›</div></div>
+    <div class="settings-row" style="cursor:pointer;" onclick="showLegal('certificate')"><div><div class="settings-row-label">Certificate Policy</div></div><div style="color:var(--text2);font-size:16px;">›</div></div>
+    <div class="settings-row" style="cursor:pointer;" onclick="showLegal('refund')"><div><div class="settings-row-label">Refund Policy</div></div><div style="color:var(--text2);font-size:16px;">›</div></div>
+  </div>
+
+  <div style="text-align:center;font-size:12px;color:var(--text2);opacity:0.4;margin-top:24px;">SkillUp Academy · A RunP8 product · skillupapp.app</div>
+</div>
+<div class="settings-toast" id="settings-toast"></div>
+</div>
 
 <!-- PAYWALL -->
 <div id="paywall-modal">
@@ -446,7 +607,7 @@ const LEGAL_PAGES={
 };
 
 function showScreen(id){
- ['landing-screen','auth-screen','app-screen','track-screen','lesson-screen','cert-screen','legal-screen'].forEach(s=>{const el=document.getElementById(s);if(el)el.classList.add('hidden');});
+ ['landing-screen','auth-screen','app-screen','track-screen','lesson-screen','cert-screen','legal-screen','settings-screen','playground-screen'].forEach(s=>{const el=document.getElementById(s);if(el)el.classList.add('hidden');});
  const t=document.getElementById(id);if(t){t.classList.remove('hidden');window.scrollTo(0,0);}
 }
 function goAuth(mode){document.getElementById('auth-title').textContent=mode==='signup'?'Create your free account':'Welcome back';showScreen('auth-screen');}
@@ -458,7 +619,7 @@ function showLegal(page){
  showScreen('legal-screen');
 }
 async function signInGoogle(){
- const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo: 'https://skillupapp.app'}});
+ const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin}});
  if(error){const e=document.getElementById('auth-err');e.textContent=error.message;e.style.display='block';}
 }
 async function signOut(){if(!confirm('Sign out?'))return;await sb.auth.signOut();currentUser=null;showScreen('landing-screen');}
@@ -520,7 +681,7 @@ function openLesson(trackId,mi,li){
  const btn=document.getElementById('complete-btn');
  btn.textContent=done?'✓ Completed':'Mark complete ✓';
  btn.className=done?'mark-complete-btn done':'mark-complete-btn';
- showScreen('lesson-screen');
+ showScreen('lesson-screen');showAIFab(true);if(currentLesson){const t=TRACKS[currentLesson.trackId];const l=t.modules_data[currentLesson.mi].lessons[currentLesson.li];currentLessonContext=l.title+': '+t.label;}
 }
 function markComplete(){
  if(!currentLesson)return;
@@ -531,7 +692,7 @@ function markComplete(){
  const btn=document.getElementById('complete-btn');
  btn.textContent='✓ Completed';btn.className='mark-complete-btn done';
 }
-function closeLesson(){if(currentTrackId){openTrack(currentTrackId);}else{showScreen('app-screen');}}
+function closeLesson(){showAIFab(false);document.getElementById('ai-chat-panel').classList.remove('open');currentLessonContext='';if(currentTrackId){openTrack(currentTrackId);}else{showScreen('app-screen');}}
 function showCertificate(trackId){
  const track=TRACKS[trackId];
  const name=currentUser?.user_metadata?.full_name||currentUser?.email?.split('@')[0]||'Student';
@@ -549,6 +710,188 @@ function showCertificate(trackId){
 function showPaywall(){document.getElementById('paywall-modal').classList.add('show');}
 function closePaywall(){document.getElementById('paywall-modal').classList.remove('show');}
 function goUpgrade(){window.open(STRIPE_LINK,'_blank');closePaywall();}
+
+
+// ── AI LESSON ASSISTANT ──
+let aiChatHistory=[];
+let currentLessonContext='';
+
+function toggleAIChat(){
+  const panel=document.getElementById('ai-chat-panel');
+  panel.classList.toggle('open');
+}
+function showAIFab(show){
+  const fab=document.getElementById('ai-fab');
+  fab.className=show?'ai-assistant-btn visible':'ai-assistant-btn';
+}
+async function sendAIChat(){
+  const input=document.getElementById('ai-chat-input');
+  const msg=input.value.trim();
+  if(!msg)return;
+  input.value='';
+  addAIMessage(msg,'user');
+  const thinking={type:'text',text:'...'};
+  const thinkEl=addAIMessage('Thinking...','assistant');
+  const lessonCtx=currentLessonContext?`The user is currently on this lesson: ${currentLessonContext}`:'The user is on SkillUp Academy, an AI professional development platform.';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',max_tokens:600,
+        system:`You are a helpful AI lesson assistant on SkillUp Academy, an AI professional development platform. ${lessonCtx} Answer questions clearly and concisely. If the user wants to test a prompt, help them improve it using the RCCF framework (Role, Context, Command, Format). Keep responses under 200 words.`,
+        messages:[...aiChatHistory,{role:'user',content:msg}]
+      })
+    });
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'Sorry, I could not get a response.';
+    thinkEl.textContent=reply;
+    aiChatHistory.push({role:'user',content:msg},{role:'assistant',content:reply});
+    if(aiChatHistory.length>12)aiChatHistory=aiChatHistory.slice(-12);
+  }catch(e){thinkEl.textContent='Something went wrong. Please try again.';}
+}
+function addAIMessage(text,role){
+  const msgs=document.getElementById('ai-chat-messages');
+  const el=document.createElement('div');
+  el.className=`ai-msg ${role}`;
+  el.textContent=text;
+  msgs.appendChild(el);
+  msgs.scrollTop=msgs.scrollHeight;
+  return el;
+}
+
+// ── PLAYGROUND ──
+const PG_TEMPLATES={
+  summarize:'You are a professional analyst.\n\nContext: I have a long document I need to understand quickly.\n\nCommand: Summarize the following document, identifying the 3 most important points, any action items required, and any red flags I should be aware of.\n\nFormat: Use bullet points under three headers: Key Points, Action Items, Red Flags.\n\n[Paste your document here]',
+  email:'You are a professional business communicator.\n\nContext: I need to write a professional email to [recipient] about [topic].\n\nCommand: Draft a clear, professional email that states the purpose in the first sentence, provides necessary context, and ends with a clear call to action.\n\nFormat: Include subject line, greeting, body (3 short paragraphs max), and sign-off.',
+  risks:'You are a senior risk analyst.\n\nContext: [Describe the document, situation, or contract you are reviewing]\n\nCommand: Identify the top 5 risks in this situation. For each risk, explain what could go wrong, how likely it is (High/Medium/Low), and what I should do about it.\n\nFormat: Numbered list. Each risk on its own line with: Risk | Likelihood | Recommended Action.',
+  careplan:'You are a California RCFE administrator with expertise in Title 22 compliance.\n\nContext: New resident admitted today. Age: [age]. Primary diagnosis: [diagnosis]. Functional status: [describe mobility, ADL needs]. Cognitive status: [alert/oriented or describe impairment].\n\nCommand: Draft an initial care plan covering ADL assistance, medication management, nutrition, social engagement, fall prevention, and any diagnosis-specific needs. Note which items require physician authorization.\n\nFormat: Organized by care area. Goal-oriented language. Flag items requiring physician sign-off.',
+  listing:'You are an experienced real estate copywriter specializing in residential listings.\n\nContext: Property details — Beds: [#], Baths: [#], Sqft: [#], Location: [neighborhood, city], Key features: [list 3-5 standout features], Recent updates: [any renovations].\n\nCommand: Write a compelling listing description that highlights the lifestyle this home offers. Lead with the strongest feature. Create an emotional connection with buyers.\n\nFormat: 150-200 words. No cliches like cozy or stunning. End with a subtle call to action.'
+};
+function loadTemplate(key){document.getElementById('pg-prompt').value=PG_TEMPLATES[key];}
+function buildRCCF(){
+  const role=document.getElementById('rccf-role').value.trim();
+  const ctx=document.getElementById('rccf-context').value.trim();
+  const cmd=document.getElementById('rccf-command').value.trim();
+  const fmt=document.getElementById('rccf-format').value.trim();
+  if(!role&&!ctx&&!cmd){return;}
+  let prompt='';
+  if(role)prompt+=`You are ${role}.\n\n`;
+  if(ctx)prompt+=`Context: ${ctx}\n\n`;
+  if(cmd)prompt+=`Command: ${cmd}\n\n`;
+  if(fmt)prompt+=`Format: ${fmt}`;
+  document.getElementById('pg-prompt').value=prompt.trim();
+}
+async function runPlayground(){
+  const prompt=document.getElementById('pg-prompt').value.trim();
+  if(!prompt)return;
+  const btn=document.getElementById('pg-run-btn');
+  const out=document.getElementById('pg-output');
+  btn.disabled=true;
+  btn.innerHTML='<span class="pg-spinner"></span>Running...';
+  out.textContent='';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',max_tokens:1000,
+        system:'You are a helpful AI assistant. Respond professionally and helpfully to the prompt provided.',
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data=await res.json();
+    out.textContent=data.content?.[0]?.text||'No response received.';
+  }catch(e){out.textContent='Error: Could not connect to AI. Please try again.';}
+  btn.disabled=false;
+  btn.innerHTML='▶ Run prompt';
+}
+
+function openSettings(){
+  // populate account
+  const name=currentUser?.user_metadata?.full_name||currentUser?.email?.split('@')[0]||'—';
+  const email=currentUser?.email||'—';
+  document.getElementById('s-name-display').textContent=name;
+  document.getElementById('s-email-display').textContent=email;
+  // plan
+  const badge=document.getElementById('s-plan-badge');
+  const sub=document.getElementById('s-plan-sub');
+  if(userPlan==='pro'){
+    badge.textContent='Pro';badge.className='plan-badge pro';
+    sub.textContent='Full access to all tracks and certificates';
+    document.getElementById('s-upgrade-row').classList.add('hidden');
+    document.getElementById('s-manage-row').classList.remove('hidden');
+  } else {
+    badge.textContent='Free';badge.className='plan-badge free';
+    sub.textContent='Free tier — Universal Foundations + first lessons';
+    document.getElementById('s-upgrade-row').classList.remove('hidden');
+    document.getElementById('s-manage-row').classList.add('hidden');
+  }
+  // progress
+  const rows=document.getElementById('s-progress-rows');
+  rows.innerHTML=Object.entries(TRACKS).map(([id,track])=>{
+    const allKeys=track.modules_data.flatMap((mod,mi)=>mod.lessons.map((_,li)=>`${id}-${mi}-${li}`));
+    const done=allKeys.filter(k=>completedLessons[k]).length;
+    const pct=allKeys.length>0?Math.round((done/allKeys.length)*100):0;
+    return `<div class="settings-row">
+      <div style="flex:1;">
+        <div class="settings-row-label">${track.title}</div>
+        <div style="display:flex;align-items:center;margin-top:6px;">
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+          <span style="font-size:12px;color:var(--text2);white-space:nowrap;">${done}/${allKeys.length} lessons</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  // load notification prefs
+  const notifPrefs=JSON.parse(localStorage.getItem('skillup_notifs')||'{"notif-weekly":true,"notif-tracks":true,"notif-certs":false}');
+  Object.entries(notifPrefs).forEach(([id,on])=>{
+    const el=document.getElementById(id);
+    if(el){el.className=on?'toggle on':'toggle';}
+  });
+  showScreen('settings-screen');
+}
+function editName(){
+  const cur=document.getElementById('s-name-display').textContent;
+  document.getElementById('s-name-input').value=cur==='—'?'':cur;
+  document.getElementById('s-name-input').classList.remove('hidden');
+  document.getElementById('s-name-save').classList.remove('hidden');
+  document.getElementById('s-name-edit').classList.add('hidden');
+}
+async function saveName(){
+  const val=document.getElementById('s-name-input').value.trim();
+  if(!val)return;
+  const{error}=await sb.auth.updateUser({data:{full_name:val}});
+  if(!error){
+    document.getElementById('s-name-display').textContent=val;
+    document.getElementById('s-name-input').classList.add('hidden');
+    document.getElementById('s-name-save').classList.add('hidden');
+    document.getElementById('s-name-edit').classList.remove('hidden');
+    ['user-display','user-display2','user-display3'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=val.split(' ')[0];});
+    showToast('Name updated!');
+  }
+}
+function resetProgress(){
+  if(!confirm('Reset all lesson progress? This cannot be undone.'))return;
+  completedLessons={};
+  localStorage.removeItem('skillup_completed');
+  openSettings();
+  showToast('Progress reset.');
+}
+function toggleNotif(id){
+  const el=document.getElementById(id);
+  const isOn=el.classList.contains('on');
+  el.className=isOn?'toggle':'toggle on';
+  const prefs=JSON.parse(localStorage.getItem('skillup_notifs')||'{}');
+  prefs[id]=!isOn;
+  localStorage.setItem('skillup_notifs',JSON.stringify(prefs));
+}
+function showToast(msg){
+  const t=document.getElementById('settings-toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
 async function init(){
  let{data:{session}}=await sb.auth.getSession();
  if(!session){const{data:r}=await sb.auth.refreshSession();session=r?.session;}
@@ -562,5 +905,64 @@ async function init(){
 }
 init();
 </script>
+
+<!-- AI LESSON ASSISTANT -->
+<button class="ai-assistant-btn" id="ai-fab" onclick="toggleAIChat()">✦</button>
+<div id="ai-chat-panel">
+  <div class="ai-chat-header">
+    <div class="ai-chat-title"><div class="ai-chat-dot"></div>AI Lesson Assistant</div>
+    <button class="ai-chat-close" onclick="toggleAIChat()">×</button>
+  </div>
+  <div class="ai-chat-messages" id="ai-chat-messages">
+    <div class="ai-msg assistant">Hi! I'm your AI lesson assistant. Ask me anything about this lesson or try a prompt from it.</div>
+  </div>
+  <div class="ai-chat-input-row">
+    <textarea class="ai-chat-input" id="ai-chat-input" rows="1" placeholder="Ask a question..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAIChat();}"></textarea>
+    <button class="ai-send-btn" onclick="sendAIChat()">↑</button>
+  </div>
+</div>
+
+<!-- PLAYGROUND -->
+<div id="playground-screen" class="hidden">
+<div class="app-header">
+  <div><div style="font-size:16px;font-weight:700;">✦ SkillUp</div><div style="font-size:12px;color:var(--text2);margin-top:2px;">AI Prompt Playground</div></div>
+  <div class="user-badge" onclick="showScreen('app-screen')">← Dashboard</div>
+</div>
+<div class="pg-body">
+  <div class="pg-label">Live AI Practice</div>
+  <div class="pg-title">Prompt Playground</div>
+  <div class="pg-sub">Test the prompts from your lessons in real-time. Use the RCCF builder or write your own.</div>
+
+  <!-- RCCF BUILDER -->
+  <div class="pg-card">
+    <div class="pg-label">RCCF Prompt Builder</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:14px;">Fill in each element to build a powerful prompt automatically.</div>
+    <div class="rccf-builder">
+      <div class="rccf-row"><div class="rccf-tag">Role</div><input class="rccf-input" id="rccf-role" placeholder="e.g. You are a senior contracts attorney"></div>
+      <div class="rccf-row"><div class="rccf-tag">Context</div><input class="rccf-input" id="rccf-context" placeholder="e.g. I am reviewing a lease for a first-time business owner"></div>
+      <div class="rccf-row"><div class="rccf-tag">Command</div><input class="rccf-input" id="rccf-command" placeholder="e.g. Identify the top 3 risks for my client"></div>
+      <div class="rccf-row"><div class="rccf-tag">Format</div><input class="rccf-input" id="rccf-format" placeholder="e.g. Plain English bullet points, no jargon"></div>
+    </div>
+    <button class="pg-run-btn" style="background:var(--bg4);color:var(--accent);border:1px solid var(--border);margin-top:0;margin-bottom:10px;" onclick="buildRCCF()">Build prompt from RCCF →</button>
+  </div>
+
+  <!-- FREE-FORM -->
+  <div class="pg-card">
+    <div class="pg-label">Your Prompt</div>
+    <div class="pg-chips" id="pg-chips">
+      <button class="pg-chip" onclick="loadTemplate('summarize')">Summarize a document</button>
+      <button class="pg-chip" onclick="loadTemplate('email')">Draft a professional email</button>
+      <button class="pg-chip" onclick="loadTemplate('risks')">Identify risks</button>
+      <button class="pg-chip" onclick="loadTemplate('careplan')">RCFE care plan</button>
+      <button class="pg-chip" onclick="loadTemplate('listing')">Real estate listing</button>
+    </div>
+    <textarea class="pg-textarea" id="pg-prompt" placeholder="Type or build your prompt above, then run it here..."></textarea>
+    <button class="pg-run-btn" id="pg-run-btn" onclick="runPlayground()">▶ Run prompt</button>
+    <div class="pg-label" style="margin-top:16px;">AI Response</div>
+    <div class="pg-output" id="pg-output">Your AI response will appear here...</div>
+  </div>
+</div>
+</div>
+
 </body>
 </html>
